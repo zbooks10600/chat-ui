@@ -13,7 +13,7 @@ import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 const APP_NAME = "Chatbot UI"
-const APP_DEFAULT_TITLE = "Chatbot UI"
+const APP_DEFAULT_TITLE = "MyLifeCare.ai"
 const APP_TITLE_TEMPLATE = "%s - Chatbot UI"
 const APP_DESCRIPTION = "Chabot UI PWA!"
 
@@ -96,7 +96,7 @@ export default async function RootLayout({
             resources={resources}
           >
             <Toaster richColors position="top-center" duration={3000} />
-            <div className="bg-background text-foreground flex h-dvh flex-col items-center overflow-x-auto">
+            <div className="bg-background text-foreground flex h-screen flex-col items-center">
               {session ? <GlobalState>{children}</GlobalState> : children}
             </div>
           </TranslationsProvider>
