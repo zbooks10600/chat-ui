@@ -74,7 +74,7 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           contentType="tools"
           onContentTypeChange={onContentTypeChange}
         />
-    /> */}
+     */}
       </TabsList>
 
       <div className="flex flex-col items-center space-y-4">
