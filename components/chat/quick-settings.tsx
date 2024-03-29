@@ -211,7 +211,7 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
               />
             ) : (
               <IconRobotFace
-                className="bg-primary text-secondary border-primary rounded border-DEFAULT p-1"
+                className="bg-primary text-secondary border-primary rounded border-[1px] p-1"
                 size={28}
               />
             ))}
@@ -227,7 +227,7 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
 
                 {selectedPreset?.name ||
                   selectedAssistant?.name ||
-                  t("Quick Settings")}
+                  t("Select Assistant")}
               </div>
 
               <IconChevronDown className="ml-1" />
