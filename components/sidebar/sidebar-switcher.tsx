@@ -32,7 +32,7 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           contentType="chats"
           onContentTypeChange={onContentTypeChange}
         />
-
+    {/* TODO Based on Security profile enable for admins only for comment out side bar for demo 
         <SidebarSwitchItem
           icon={<IconAdjustmentsHorizontal size={SIDEBAR_ICON_SIZE} />}
           contentType="presets"
@@ -67,13 +67,14 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           icon={<IconRobotFace size={SIDEBAR_ICON_SIZE} />}
           contentType="assistants"
           onContentTypeChange={onContentTypeChange}
-        />
+
 
         <SidebarSwitchItem
           icon={<IconBolt size={SIDEBAR_ICON_SIZE} />}
           contentType="tools"
           onContentTypeChange={onContentTypeChange}
         />
+    /> */}
       </TabsList>
 
       <div className="flex flex-col items-center space-y-4">
