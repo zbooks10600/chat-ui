@@ -114,7 +114,9 @@ export default async function Login({
       const emailMatch = emailWhitelist?.includes(email)
       if (!domainMatch && !emailMatch) {
         return redirect(
-          `/login?message=Email ${email} is not allowed to sign up.`
+          //TODO Build waitlist
+          // `/login?message=Email ${email} is not allowed to sign up.`
+          `/login?message=Welcome to our community! We're thrilled to see such enthusiastic interest, but currently, new registrations are prioritized for our Enterprise providers and carriers. Good news though your email, ${email}, is now on our waitlist! Rest assured, we'll reach out to you just as soon as we expand our capacity. You can see a video demo on our YouTube Channel "MyLifecar AI".`
         )
       }
     }
