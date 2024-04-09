@@ -420,24 +420,30 @@ export const Message: FC<MessageProps> = ({
             ))}
           </div>
         )}
-
+        
         {showImagePreview && selectedImage && (
-          <FilePreview
-            type="image"
-            path={selectedImage.url}
-            onClose={() => setShowImagePreview(false)}
-          />
-        )}
-
+        <FilePreview
+          type="image"
+          item={selectedImage}
+          isOpen={showImagePreview}
+          onOpenChange={(isOpen: boolean) => {
+            setShowImagePreview(isOpen)
+            setSelectedImage(null)
+          }}
+        />
+      )}
+        
         {showFileItemPreview && selectedFileItem && (
-          <FilePreview
-            file={{
-              type: selectedFileItem.type,
-              path: selectedFileItem.url
-            }}
-            onClose={() => setShowFileItemPreview(false)}
-          />
-        )}
+        <FilePreview
+          type="file_item"
+          item={selectedFileItem}
+          isOpen={showFileItemPreview}
+          onOpenChange={(isOpen: boolean) => {
+            setShowFileItemPreview(isOpen)
+            setSelectedFileItem(null)
+          }}
+        />
+      )}
       </div>
     </div>
   )
