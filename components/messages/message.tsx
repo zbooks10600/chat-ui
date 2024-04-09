@@ -179,6 +179,39 @@ export const Message: FC<MessageProps> = ({
     return acc
   }, fileAccumulator)
 
+  // Function to fetch TTS audio from Elevanlabs API
+  const fetchTTS = async (text: string) => {
+    const API_KEY = '263f842e1e682c14a42932cb26d46b17';
+    const VOICE_ID = '0JA4AbPYtv3MDwPFQwsc';
+    const options = {
+      method: 'POST',
+      headers: {
+        'xi-api-key': API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text })
+    };
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, options);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch TTS audio');
+    }
+
+    const audioBlob = await response.blob();
+    return URL.createObjectURL(audioBlob);
+  }
+
+  const handleSpeak = async () => {
+    try {
+      const audioURL = await fetchTTS(message.content);
+      const audio = new Audio(audioURL);
+      audio.play();
+    } catch (error) {
+      console.error('Error fetching TTS audio:', error);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -199,6 +232,7 @@ export const Message: FC<MessageProps> = ({
             isEditing={isEditing}
             isHovering={isHovering}
             onRegenerate={handleRegenerate}
+            onSpeak={handleSpeak} // Added Speak action
           />
         </div>
         <div className="space-y-3">
@@ -208,7 +242,6 @@ export const Message: FC<MessageProps> = ({
                 className="border-primary bg-primary text-secondary rounded border-DEFAULT p-1"
                 size={ICON_SIZE}
               />
-
               <div className="text-lg font-semibold">Prompt</div>
             </div>
           ) : (
@@ -252,7 +285,6 @@ export const Message: FC<MessageProps> = ({
                   size={ICON_SIZE}
                 />
               )}
-
               <div className="font-semibold">
                 {message.role === "assistant"
                   ? message.assistant_id
@@ -281,7 +313,6 @@ export const Message: FC<MessageProps> = ({
                     return (
                       <div className="flex animate-pulse items-center space-x-2">
                         <IconFileText size={20} />
-
                         <div>Searching files...</div>
                       </div>
                     )
@@ -289,7 +320,6 @@ export const Message: FC<MessageProps> = ({
                     return (
                       <div className="flex animate-pulse items-center space-x-2">
                         <IconBolt size={20} />
-
                         <div>Using {toolInUse}...</div>
                       </div>
                     )
@@ -350,21 +380,14 @@ export const Message: FC<MessageProps> = ({
                         .filter(fileItem => {
                           const parentFile = files.find(
                             parentFile => parentFile.id === fileItem.file_id
-                          )
-                          return parentFile?.id === file.id
+                          );
+                          return parentFile?.id === file.id;
                         })
                         .map((fileItem, index) => (
-                          <div
-                            key={index}
-                            className="ml-8 mt-1.5 flex cursor-pointer items-center space-x-2 hover:opacity-50"
-                            onClick={() => {
-                              setSelectedFileItem(fileItem)
-                              setShowFileItemPreview(true)
-                            }}
-                          >
-                            <div className="text-sm font-normal">
-                              <span className="mr-1 text-lg font-bold">-</span>{" "}
-                              {fileItem.content.substring(0, 200)}...
+                          <div key={index} className="flex items-center space-x-2">
+                            <div className="w-5" />
+                            <div className="text-sm truncate">
+                              {fileItem.content || "Untitled"} {/* Use another property or a default value */}
                             </div>
                           </div>
                         ))}
@@ -376,70 +399,46 @@ export const Message: FC<MessageProps> = ({
           </div>
         )}
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {message.image_paths.map((path, index) => {
-            const item = chatImages.find(image => image.path === path)
-
-            return (
-              <Image
+        {chatImages?.length > 0 && (
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            {chatImages.map((image, index) => (
+              <div
                 key={index}
-                className="cursor-pointer rounded hover:opacity-50"
-                src={path.startsWith("data") ? path : item?.base64}
-                alt="message image"
-                width={300}
-                height={300}
+                className="relative cursor-pointer w-full aspect-w-1 aspect-h-1 overflow-hidden bg-primary"
                 onClick={() => {
-                  setSelectedImage({
-                    messageId: message.id,
-                    path,
-                    base64: path.startsWith("data") ? path : item?.base64 || "",
-                    url: path.startsWith("data") ? "" : item?.url || "",
-                    file: null
-                  })
-
+                  setSelectedImage(image)
                   setShowImagePreview(true)
                 }}
-                loading="lazy"
-              />
-            )
-          })}
-        </div>
-        {isEditing && (
-          <div className="mt-4 flex justify-center space-x-2">
-            <Button size="sm" onClick={handleSendEdit}>
-              Save & Send
-            </Button>
-
-            <Button size="sm" variant="outline" onClick={onCancelEdit}>
-              Cancel
-            </Button>
+              >
+                <Image
+                  className="object-cover w-full h-full"
+                  src={image.url}
+                  alt={`image-${index}`}
+                  layout="fill"
+                />
+              </div>
+            ))}
           </div>
         )}
+
+        {showImagePreview && selectedImage && (
+          <FilePreview
+            type="image"
+            path={selectedImage.url}
+            onClose={() => setShowImagePreview(false)}
+          />
+        )}
+
+        {showFileItemPreview && selectedFileItem && (
+          <FilePreview
+            file={{
+              type: selectedFileItem.type,
+              path: selectedFileItem.url
+            }}
+            onClose={() => setShowFileItemPreview(false)}
+          />
+        )}
       </div>
-
-      {showImagePreview && selectedImage && (
-        <FilePreview
-          type="image"
-          item={selectedImage}
-          isOpen={showImagePreview}
-          onOpenChange={(isOpen: boolean) => {
-            setShowImagePreview(isOpen)
-            setSelectedImage(null)
-          }}
-        />
-      )}
-
-      {showFileItemPreview && selectedFileItem && (
-        <FilePreview
-          type="file_item"
-          item={selectedFileItem}
-          isOpen={showFileItemPreview}
-          onOpenChange={(isOpen: boolean) => {
-            setShowFileItemPreview(isOpen)
-            setSelectedFileItem(null)
-          }}
-        />
-      )}
     </div>
   )
 }

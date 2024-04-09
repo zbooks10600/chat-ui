@@ -13,6 +13,7 @@ interface MessageActionsProps {
   onCopy: () => void
   onEdit: () => void
   onRegenerate: () => void
+  onSpeak: () => void
 }
 
 export const MessageActions: FC<MessageActionsProps> = ({
@@ -22,7 +23,8 @@ export const MessageActions: FC<MessageActionsProps> = ({
   isHovering,
   onCopy,
   onEdit,
-  onRegenerate
+  onRegenerate,
+  onSpeak
 }) => {
   const { isGenerating } = useContext(ChatbotUIContext)
 
@@ -110,7 +112,21 @@ export const MessageActions: FC<MessageActionsProps> = ({
           }
         />
       )}
-
+      
+      {isLast && (
+        <WithTooltip
+          delayDuration={1000}
+          side="bottom"
+          display={<div>Speak</div>}
+          trigger={
+            <IconRepeat
+              className="cursor-pointer hover:opacity-50"
+              size={MESSAGE_ICON_SIZE}
+              onClick={onSpeak}
+            />
+          }
+        />
+      )}
       {/* {1 > 0 && isAssistant && <MessageReplies />} */}
     </div>
   )
