@@ -2,6 +2,7 @@ import { ChatbotUIContext } from "@/context/context"
 import { IconCheck, IconCopy, IconEdit, IconRepeat } from "@tabler/icons-react"
 import { FC, useContext, useEffect, useState } from "react"
 import { WithTooltip } from "../ui/with-tooltip"
+import { Volume2 } from "lucide-react"
 
 export const MESSAGE_ICON_SIZE = 18
 
@@ -13,7 +14,7 @@ interface MessageActionsProps {
   onCopy: () => void
   onEdit: () => void
   onRegenerate: () => void
-  onSpeak: () => void
+  onHandleSpeak: () => void
 }
 
 export const MessageActions: FC<MessageActionsProps> = ({
@@ -24,7 +25,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
   onCopy,
   onEdit,
   onRegenerate,
-  onSpeak
+  onHandleSpeak
 }) => {
   const { isGenerating } = useContext(ChatbotUIContext)
 
@@ -79,6 +80,36 @@ export const MessageActions: FC<MessageActionsProps> = ({
         />
       )}
 
+      {isAssistant && isLast && !isHovering && (
+        <WithTooltip
+          delayDuration={1000}
+          side="bottom"
+          display={<div>Play</div>}
+          trigger={
+            <Volume2
+              className="cursor-pointer hover:opacity-50"
+              size={MESSAGE_ICON_SIZE}
+              onClick={onHandleSpeak}
+            />
+          }
+        />
+      )}
+      {isAssistant && isHovering && (
+        <WithTooltip
+          delayDuration={1000}
+          side="bottom"
+          display={<div>Play</div>}
+          trigger={
+            <Volume2
+              className="cursor-pointer hover:opacity-50"
+              size={MESSAGE_ICON_SIZE}
+              onClick={onHandleSpeak}
+            />
+          }
+        />
+      )}
+
+
       {(isHovering || isLast) && (
         <WithTooltip
           delayDuration={1000}
@@ -112,21 +143,7 @@ export const MessageActions: FC<MessageActionsProps> = ({
           }
         />
       )}
-      
-      {isLast && (
-        <WithTooltip
-          delayDuration={1000}
-          side="bottom"
-          display={<div>Speak</div>}
-          trigger={
-            <IconRepeat
-              className="cursor-pointer hover:opacity-50"
-              size={MESSAGE_ICON_SIZE}
-              onClick={onSpeak}
-            />
-          }
-        />
-      )}
+
       {/* {1 > 0 && isAssistant && <MessageReplies />} */}
     </div>
   )

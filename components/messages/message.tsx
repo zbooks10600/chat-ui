@@ -6,6 +6,7 @@ import { Tables } from "@/supabase/types"
 import { LLM, LLMID, MessageImage, ModelProvider } from "@/types"
 import {
   IconBolt,
+  IconBrandSoundcloud,
   IconCaretDownFilled,
   IconCaretRightFilled,
   IconCircleFilled,
@@ -23,6 +24,8 @@ import { TextareaAutosize } from "../ui/textarea-autosize"
 import { WithTooltip } from "../ui/with-tooltip"
 import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
+import { Icon } from "@radix-ui/react-select"
+import { Music2Icon, Pointer, SpeakerIcon, Volume2Icon } from "lucide-react"
 
 const ICON_SIZE = 32
 
@@ -232,9 +235,14 @@ export const Message: FC<MessageProps> = ({
             isEditing={isEditing}
             isHovering={isHovering}
             onRegenerate={handleRegenerate}
-            onSpeak={handleSpeak} // Added Speak action
+            onHandleSpeak={handleSpeak}
+            // onSpeak={handleSpeak} // Added Speak action
           />
+
+          {/* <Volume2Icon onClick={handleSpeak} style={{cursor: "pointer"}}></Volume2Icon> */}
+          
         </div>
+
         <div className="space-y-3">
           {message.role === "system" ? (
             <div className="flex items-center space-x-4">
@@ -372,7 +380,6 @@ export const Message: FC<MessageProps> = ({
                         <div>
                           <FileIcon type={file.type} />
                         </div>
-
                         <div className="truncate">{file.name}</div>
                       </div>
 
@@ -420,30 +427,24 @@ export const Message: FC<MessageProps> = ({
             ))}
           </div>
         )}
-        
+
         {showImagePreview && selectedImage && (
-        <FilePreview
-          type="image"
-          item={selectedImage}
-          isOpen={showImagePreview}
-          onOpenChange={(isOpen: boolean) => {
-            setShowImagePreview(isOpen)
-            setSelectedImage(null)
-          }}
-        />
-      )}
-        
+          <FilePreview
+            type="image"
+            path={selectedImage.url}
+            onClose={() => setShowImagePreview(false)}
+          />
+        )}
+
         {showFileItemPreview && selectedFileItem && (
-        <FilePreview
-          type="file_item"
-          item={selectedFileItem}
-          isOpen={showFileItemPreview}
-          onOpenChange={(isOpen: boolean) => {
-            setShowFileItemPreview(isOpen)
-            setSelectedFileItem(null)
-          }}
-        />
-      )}
+          <FilePreview
+            file={{
+              type: selectedFileItem.type,
+              path: selectedFileItem.url
+            }}
+            onClose={() => setShowFileItemPreview(false)}
+          />
+        )}
       </div>
     </div>
   )
