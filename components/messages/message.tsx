@@ -26,6 +26,7 @@ import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
 import { Icon } from "@radix-ui/react-select"
 import { Music2Icon, Pointer, SpeakerIcon, Volume2Icon } from "lucide-react"
+import { toast } from "sonner"
 
 const ICON_SIZE = 32
 
@@ -184,8 +185,9 @@ export const Message: FC<MessageProps> = ({
 
   // Function to fetch TTS audio from Elevanlabs API
   const fetchTTS = async (text: string) => {
-    const API_KEY = '263f842e1e682c14a42932cb26d46b17';
-    const VOICE_ID = '0JA4AbPYtv3MDwPFQwsc';
+    const API_KEY = process.env.NEXT_PUBLIC_TEXT_TO_SPEECH_ELEVENLABS_API || '';
+    const VOICE_ID = process.env.NEXT_PUBLIC_TEXT_TO_SPEECH_ELEVENLABS_VOICE_ID || '';
+    
     const options = {
       method: 'POST',
       headers: {
@@ -210,7 +212,11 @@ export const Message: FC<MessageProps> = ({
       const audioURL = await fetchTTS(message.content);
       const audio = new Audio(audioURL);
       audio.play();
+
+      //toast.info('Playing...');
+      
     } catch (error) {
+      toast.error("Text-to-Speech API Error: " + error);
       console.error('Error fetching TTS audio:', error);
     }
   };
@@ -428,7 +434,7 @@ export const Message: FC<MessageProps> = ({
           </div>
         )}
 
-{showImagePreview && selectedImage && (
+      {showImagePreview && selectedImage && (
         <FilePreview
           type="image"
           item={selectedImage}
