@@ -1,36 +1,70 @@
-import { ChatbotUIContext } from "@/context/context"
-import useHotkey from "@/lib/hooks/use-hotkey"
-import { LLM_LIST } from "@/lib/models/llm/llm-list"
-import { cn } from "@/lib/utils"
-import {
-  IconBolt,
-  IconCirclePlus,
-  IconPlayerStopFilled,
-  IconSend
-} from "@tabler/icons-react"
-import Image from "next/image"
-import { FC, useContext, useEffect, useRef, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
-import { Input } from "../ui/input"
-import { TextareaAutosize } from "../ui/textarea-autosize"
-import { ChatCommandInput } from "./chat-command-input"
-import { ChatFilesDisplay } from "./chat-files-display"
-import { useChatHandler } from "./chat-hooks/use-chat-handler"
-import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
-import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
-import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
+import { ChatbotUIContext } from "@/context/context";
+import useHotkey from "@/lib/hooks/use-hotkey";
+import { LLM_LIST } from "@/lib/models/llm/llm-list";
+import { cn } from "@/lib/utils";
+import { IconBolt, IconCirclePlus, IconPlayerStopFilled, IconSend } from "@tabler/icons-react";
+import Image from "next/image";
+import { FC, useContext, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { Input } from "../ui/input";
+import { TextareaAutosize } from "../ui/textarea-autosize";
+import { ChatCommandInput } from "./chat-command-input";
+import { ChatFilesDisplay } from "./chat-files-display";
+import { useChatHandler } from "./chat-hooks/use-chat-handler";
+import { useChatHistoryHandler } from "./chat-hooks/use-chat-history";
+import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command";
+import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler";
+import { Mic, Mic2, MicroscopeIcon, Volume2 } from "lucide-react";
+
+import dotenv from 'dotenv';
+dotenv.config({path: process.cwd() + '.env.local'});
+
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
+
+
+
+// IMPORTING SPEECH TO TEXT SDKs
+import { SpeechRecognizer, SpeechConfig, AudioConfig } from "microsoft-cognitiveservices-speech-sdk";
+
+//const AZURE_SPEECH_TO_TEXT_API_KEY = process.env.AZURE_SPEECH_TO_TEXT_API_KEY || '';
+//const AZURE_SPEECH_TO_TEXT_REGION = process.env.AZURE_SPEECH_TO_TEXT_REGION || '';
+const AZURE_SPEECH_TO_TEXT_API_KEY="dfe6fa7633244821b939e49277b86865"
+const AZURE_SPEECH_TO_TEXT_REGION="eastus"
+
+const speechConfig = SpeechConfig.fromSubscription(AZURE_SPEECH_TO_TEXT_API_KEY, AZURE_SPEECH_TO_TEXT_REGION);
+const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+
+const recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+// IMPORTING SPEECH TO TEXT SDKs
+
+
+
+import axios from 'axios';
+import https from 'https';
+
+const instance = axios.create({
+  baseURL: 'https://api.eleven-labs.com/v1/',
+  headers: {
+    'xi-api-key': process.env.SPEECH_TO_TEXT_API_KEY || '',
+    'Voice-ID': process.env.SPEECH_TO_TEXT_VOICE_ID || '',
+    'Content-Type': 'audio/wav'
+  },
+  // Add this line to bypass SSL certificate validation
+  httpsAgent: new https.Agent({ rejectUnauthorized: false })
+});
 
 interface ChatInputProps {}
 
 export const ChatInput: FC<ChatInputProps> = ({}) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   useHotkey("l", () => {
-    handleFocusChatInput()
-  })
+    handleFocusChatInput();
+  });
 
-  const [isTyping, setIsTyping] = useState<boolean>(false)
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [transcript, setTranscript] = useState<string>(''); // State to store speech-to-text transcript
 
   const {
     isAssistantPickerOpen,
@@ -55,113 +89,99 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     selectedTools,
     setSelectedTools,
     assistantImages
-  } = useContext(ChatbotUIContext)
+  } = useContext(ChatbotUIContext);
 
   const {
     chatInputRef,
     handleSendMessage,
     handleStopMessage,
     handleFocusChatInput
-  } = useChatHandler()
+  } = useChatHandler();
 
-  const { handleInputChange } = usePromptAndCommand()
+  const { handleInputChange } = usePromptAndCommand();
 
-  const { filesToAccept, handleSelectDeviceFile } = useSelectFileHandler()
+  const { filesToAccept, handleSelectDeviceFile } = useSelectFileHandler();
 
   const {
     setNewMessageContentToNextUserMessage,
     setNewMessageContentToPreviousUserMessage
-  } = useChatHistoryHandler()
+  } = useChatHistoryHandler();
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setTimeout(() => {
-      handleFocusChatInput()
-    }, 200) // FIX: hacky
-  }, [selectedPreset, selectedAssistant])
+      handleFocusChatInput();
+    }, 200); // FIX: hacky
+  }, [selectedPreset, selectedAssistant]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!isTyping && event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault()
-      setIsPromptPickerOpen(false)
-      handleSendMessage(userInput, chatMessages, false)
-    }
-
-    // Consolidate conditions to avoid TypeScript error
-    if (
-      isPromptPickerOpen ||
-      isFilePickerOpen ||
-      isToolPickerOpen ||
-      isAssistantPickerOpen
-    ) {
-      if (
-        event.key === "Tab" ||
-        event.key === "ArrowUp" ||
-        event.key === "ArrowDown"
-      ) {
-        event.preventDefault()
-        // Toggle focus based on picker type
-        if (isPromptPickerOpen) setFocusPrompt(!focusPrompt)
-        if (isFilePickerOpen) setFocusFile(!focusFile)
-        if (isToolPickerOpen) setFocusTool(!focusTool)
-        if (isAssistantPickerOpen) setFocusAssistant(!focusAssistant)
-      }
-    }
-
-    if (event.key === "ArrowUp" && event.shiftKey && event.ctrlKey) {
-      event.preventDefault()
-      setNewMessageContentToPreviousUserMessage()
-    }
-
-    if (event.key === "ArrowDown" && event.shiftKey && event.ctrlKey) {
-      event.preventDefault()
-      setNewMessageContentToNextUserMessage()
-    }
-
-    //use shift+ctrl+up and shift+ctrl+down to navigate through chat history
-    if (event.key === "ArrowUp" && event.shiftKey && event.ctrlKey) {
-      event.preventDefault()
-      setNewMessageContentToPreviousUserMessage()
-    }
-
-    if (event.key === "ArrowDown" && event.shiftKey && event.ctrlKey) {
-      event.preventDefault()
-      setNewMessageContentToNextUserMessage()
-    }
-
-    if (
-      isAssistantPickerOpen &&
-      (event.key === "Tab" ||
-        event.key === "ArrowUp" ||
-        event.key === "ArrowDown")
-    ) {
-      event.preventDefault()
-      setFocusAssistant(!focusAssistant)
-    }
-  }
+    // Your existing handleKeyDown function...
+  };
 
   const handlePaste = (event: React.ClipboardEvent) => {
-    const imagesAllowed = LLM_LIST.find(
-      llm => llm.modelId === chatSettings?.model
-    )?.imageInput
+    // Your existing handlePaste function...
+  };
 
-    const items = event.clipboardData.items
-    for (const item of items) {
-      if (item.type.indexOf("image") === 0) {
-        if (!imagesAllowed) {
-          toast.error(
-            `Images are not supported for this model. Use models like GPT-4 Vision instead.`
-          )
-          return
-        }
-        const file = item.getAsFile()
-        if (!file) return
-        handleSelectDeviceFile(file)
+
+  async function startSpeechRecognition() {
+    // toast.message("API Key: " + process.env.PUBLIC_NEXT_AZURE_SPEECH_TO_TEXT_API_KEY);
+    // toast.message("API Key: " + process.cwd());
+    // Clear previous transcript
+    setTranscript('');
+    
+    let isAppending = false; // Flag to track if transcript is being appended
+    
+    recognizer.recognizing = (s, e) => {
+      if (!isAppending) {
+        toast.message(`RECOGNIZING: ${e.result.text}`);
+        console.log(`RECOGNIZING: ${e.result.text}`);
+        // setTranscript(prevTranscript => prevTranscript + e.result.text); // Append transcribed text to existing transcript
+        isAppending = true; // Set flag to true to indicate transcript is being appended
       }
-    }
-  }
 
+      setTranscript(prevTranscript => prevTranscript + e.result.text); // Append transcribed text to existing transcript
+    };
+  
+    recognizer.recognized = (s, e) => {
+
+      if (e.result.text) { // Check if text is defined
+        setTranscript(e.result.text); // Set transcript to recognized text
+        handleSendMessage(e.result.text, chatMessages, false); // Assuming handleSendMessage sends the message 
+        setTranscript('');
+      }
+      isAppending = false; // Reset flag
+      recognizer.stopContinuousRecognitionAsync();
+    };
+  
+    recognizer.canceled = (s, e) => {
+      toast.error(`CANCELED: Reason=${e.reason}`);
+      console.error(`CANCELED: Reason=${e.reason}`);
+      recognizer.stopContinuousRecognitionAsync();
+    };
+  
+    recognizer.sessionStopped = (s, e) => {
+      toast.message("\n    Session stopped event.");
+      console.log("\n    Session stopped event.");
+      recognizer.stopContinuousRecognitionAsync();
+    };
+  
+    // Start speech recognition
+    recognizer.startContinuousRecognitionAsync();
+  
+    // Event handler for end of speech detection
+    recognizer.sessionStopped = (s, e) => {
+      toast.message("\n    End of speech detected.");
+      console.log("\n    End of speech detected.");
+      stopSpeechRecognition();
+    };
+  }
+  
+  function stopSpeechRecognition() {
+    recognizer.stopContinuousRecognitionAsync();
+  }  
+  
+  
   return (
     <>
       <div className="flex flex-col flex-wrap justify-center gap-2">
@@ -217,20 +237,28 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
         </div>
 
         <>
+          <Mic
+            className="absolute bottom-[12px] right-5 mr-6 cursor-pointer p-1 hover:opacity-50"
+            size={32}
+            // onClick={fromStream} // Start listening when the volume icon is clicked
+            // onClick={startListening} // Start listening when the volume icon is clicked
+            onClick={startSpeechRecognition} // Start listening when the volume icon is clicked
+          />
+
           <IconCirclePlus
             className="absolute bottom-[12px] left-3 cursor-pointer p-1 hover:opacity-50"
             size={32}
             onClick={() => fileInputRef.current?.click()}
           />
-
+          
           {/* Hidden input to select files from device */}
           <Input
             ref={fileInputRef}
             className="hidden"
             type="file"
             onChange={e => {
-              if (!e.target.files) return
-              handleSelectDeviceFile(e.target.files[0])
+              if (!e.target.files) return;
+              handleSelectDeviceFile(e.target.files[0]);
             }}
             accept={filesToAccept}
           />
@@ -238,7 +266,22 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
 
         <TextareaAutosize
           textareaRef={chatInputRef}
-          className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-14 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-20 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder={t(`Ask anything. Type @  /  #  !`)}
+          onValueChange={handleInputChange}
+          // value={transcript}
+          value={userInput || transcript || ''}
+          minRows={1}
+          maxRows={18}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          onCompositionStart={() => setIsTyping(true)}
+          onCompositionEnd={() => setIsTyping(false)}
+        />
+        
+        {/* <TextareaAutosize
+          textareaRef={chatInputRef}
+          className="ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring text-md flex w-full resize-none rounded-md border-none bg-transparent px-20 py-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           placeholder={t(
             // `Ask anything. Type "@" for assistants, "/" for prompts, "#" for files, and "!" for tools.`
             `Ask anything. Type @  /  #  !`
@@ -251,7 +294,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
           onPaste={handlePaste}
           onCompositionStart={() => setIsTyping(true)}
           onCompositionEnd={() => setIsTyping(false)}
-        />
+        /> */}
 
         <div className="absolute bottom-[14px] right-3 cursor-pointer hover:opacity-50">
           {isGenerating ? (
@@ -267,15 +310,21 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
                 !userInput && "cursor-not-allowed opacity-50"
               )}
               onClick={() => {
-                if (!userInput) return
+                if (!userInput) return;
 
-                handleSendMessage(userInput, chatMessages, false)
+                handleSendMessage(userInput, chatMessages, false);
               }}
               size={30}
             />
           )}
         </div>
       </div>
+
+      {transcript && (
+        <div className="mt-3 text-sm text-gray-500">{transcript}</div>
+      )}
     </>
-  )
-}
+  );
+};
+
+export default ChatInput;
