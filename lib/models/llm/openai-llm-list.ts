@@ -6,7 +6,7 @@ const OPENAI_PLATORM_LINK = "https://platform.openai.com/docs/overview"
 const GPT4o: LLM = {
   modelId: "gpt-4o",
   modelName: "GPT-4o",
-  provider: "openai",
+  provider: "Premium",
   hostedId: "gpt-4o",
   platformLink: OPENAI_PLATORM_LINK,
   imageInput: true,
@@ -21,7 +21,7 @@ const GPT4o: LLM = {
 // GPT-4 Turbo (UPDATED 1/25/24)
 const GPT4Turbo: LLM = {
   modelId: "gpt-4-turbo-preview",
-  modelName: "Premium",
+  modelName: "Plus",
   provider: "openai",
   hostedId: "gpt-4-turbo-preview",
   platformLink: OPENAI_PLATORM_LINK,
