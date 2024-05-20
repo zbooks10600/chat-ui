@@ -6,8 +6,8 @@ const OPENAI_PLATORM_LINK = "https://platform.openai.com/docs/overview"
 const GPT4o: LLM = {
   modelId: "gpt-4o",
   modelName: "Premium",
-  provider: "Premium",
-  hostedId: "openai",
+  provider: "openai",
+  hostedId: "gpt-4o",
   platformLink: OPENAI_PLATORM_LINK,
   imageInput: true,
   pricing: {
