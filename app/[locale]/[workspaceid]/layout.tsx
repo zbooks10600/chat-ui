@@ -94,9 +94,12 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     setLoading(true)
 
     const workspace = await getWorkspaceById(workspaceId)
-    
+    setSelectedWorkspace(workspace)
+
+    const assistantData = await getAssistantWorkspacesByWorkspaceId(workspaceId)
+
     // Get workpace by Billing Plan if any
-    var billing_plan = "MyLifeCareAI" //workspace?.billing_plan || "";
+    var billing_plan = workspace?.billing_plan || "MyLifeCareAI"
     if (billing_plan !== "") {
       const bpAssistants = await getAssistantsByBillingPlan(billing_plan)
       const mergedAssistants = [...assistantData.assistants, ...bpAssistants]
@@ -104,9 +107,6 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     } else {
       setAssistants(assistantData.assistants)
     }
-
-    const assistantData = await getAssistantWorkspacesByWorkspaceId(workspaceId)
-    setAssistants(assistantData.assistants)
 
     for (const assistant of assistantData.assistants) {
       let url = ""
