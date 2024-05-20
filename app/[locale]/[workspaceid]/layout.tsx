@@ -99,7 +99,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     const assistantData = await getAssistantWorkspacesByWorkspaceId(workspaceId)
 
     // Get workpace by Billing Plan if any
-    var billing_plan = workspace?.billing_plan || "MyLifeCareAI"
+    var billing_plan = "MyLifeCareAI"
     if (billing_plan !== "") {
       const bpAssistants = await getAssistantsByBillingPlan(billing_plan)
       const mergedAssistants = [...assistantData.assistants, ...bpAssistants]
