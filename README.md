@@ -68,14 +68,15 @@ ubuntuデスクトップをインストールする。
 2. 依存パッケージのインストールする。
 > npm install
 
-### 6. Supabaseのインストール
-1. Supabaseのインストールする。　※Homebrewは事前にインストールしておいてください。
+### 6. Supabase CLIインストール
+1. Supabase CLIをインストールする。　※Homebrewは事前にインストールしておいてください。
 > brew install supabase/tap/supabase
 
 2. Supabaseの起動する。
 > supabase start
 
-3. 起動ログから以下値を取得する。
+3. 設定値を取得する。
+> supabase status
 - `API URL`
 - `anon key`
 - `service_role key`
