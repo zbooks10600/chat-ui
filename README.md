@@ -69,9 +69,8 @@ ubuntuデスクトップをインストールする。
 > npm install
 
 ### 6. Supabaseのインストール
-1. Supabaseのインストールする。
+1. Supabaseのインストールする。　※Homebrewは事前にインストールしておいてください。
 > brew install supabase/tap/supabase
-※Homebrewは事前にインストールしておいてください。
 
 2. Supabaseの起動する。
 > supabase start
