@@ -129,7 +129,7 @@ export default async function Login({
       password,
       options: {
         // USE IF YOU WANT TO SEND EMAIL VERIFICATION, ALSO CHANGE TOML FILE
-        // emailRedirectTo: `${origin}/auth/callback`
+        emailRedirectTo: `${origin}/auth/callback`
       }
     })
 
@@ -141,7 +141,7 @@ export default async function Login({
     return redirect("/setup")
 
     // USE IF YOU WANT TO SEND EMAIL VERIFICATION, ALSO CHANGE TOML FILE
-    // return redirect("/login?message=Check email to continue sign in process")
+    return redirect("/login?message=Check email to continue sign in process")
   }
 
   const handleResetPassword = async (formData: FormData) => {
