@@ -17,67 +17,90 @@ ubuntuデスクトップをインストールする。
 ※今回は、バージョン「22.04.4」をインストールする
 
 ### 2. chatbot-uiクローン
-#### 1. アップデートできるパッケージを確認する。
+1. アップデートできるパッケージを確認する。
 > sudo apt update
 
-#### 2. 必要なパッケージをインストールする。（Git、Curl）
+2. 必要なパッケージをインストールする。（Git、Curl）
 > sudo apt install git curl
 
-#### 3. chatbot-uiをクローンする
+3. chatbot-uiをクローンする
 > git clone https://github.com/mckaywrigley/chatbot-ui.git
 
 ### 3. Node.jsインストール
-#### 1. nvmをインストールをする。※最新のnvmを取得する際は、 v0.38.0 の部分を必要に応じて更新すること
+1. nvmをインストールをする。※最新のnvmを取得する際は、 v0.38.0 の部分を必要に応じて更新すること
 > curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 
-#### 2. 設定更新をする。
+2. 設定更新をする。
 > source ~/.bashrc
 
-#### 3. Node.jsをインストールする。
+3. Node.jsをインストールする。
 > nvm install node
 
-#### 4. Node.jsをビルドする。
+4. Node.jsをビルドする。
 > cd chatbot-ui/
 > npm run build
 
 ### 4. Docker Engineインストール
-#### 1. 古いバージョンのDockerを削除する。
+1. 古いバージョンのDockerを削除する。
 > sudo apt remove docker docker-engine docker.io containerd runc
 
-#### 2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
+2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
 > sudo apt update
 > sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
-#### 3. Docker公式のGPGキーを追加する。
+3. Docker公式のGPGキーを追加する。
 > curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-#### 4. Dockerのリポジトリを追加する。
+4. Dockerのリポジトリを追加する。
 > sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-#### 5. パッケージリストを更新し、Docker Engineをインストールする。
+5. パッケージリストを更新し、Docker Engineをインストールする。
 > sudo apt update
 > sudo apt install docker-ce docker-ce-cli containerd.io
 
-#### 6. Dockerが正しくインストールされたかの確認する。
+6. Dockerが正しくインストールされたかの確認する。
 > sudo docker --version
 
-### 5. Supabase CLIインストール
-#### 1. Supabase CLIのGitHubリポジトリをクローンする。
-> git clone https://github.com/supabase/supabase-cli.git
+### 5. 依存関係インストール
+1. ディレクトリの移動
+> cd chatbot-ui
 
-#### 2. クローンしたリポジトリのディレクトリに移動する。
-> cd supabase-cli
+2. 依存パッケージのインストール
+> npm install
 
-#### 3. インストールスクリプトを実行する。
-> sudo ./install.sh
+### 6. Supabaseのインストール
+1. Supabaseのインストールする。
+> brew install supabase/tap/supabase
+※Homebrewは事前にインストールしておいてください。
 
-#### 4. Supabase CLIのインストール確認をする。
-> supabase --version
+2. Supabaseの起動する。
+> supabase start
+
+3. 起動ログから以下値を取得する。
+- `API URL`
+- `anon key`
+- `service_role key`
+
+### 7. 環境設定
+1. `.env.local`ファイルを作成する。
+> cp .env.local.example .env.local
+
+2. `.env.local`ファイルに設定を追加する。
+> vi .env.local
+
+- `NEXT_PUBLIC_SUPABASE_URL`：上記5-3の`API URL`を設定
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記5-3の`anon key`を設定
+- `SUPABASE_SERVICE_ROLE_KEY`：上記5-3の`service_role key`を設定
+
+### 8. Chatbot UI 起動
+1. Chatbot UIを起動する
+> npm run chat
+
 
 ## miiboの設定
 
 ### エージェントの作成～公開
-株式会社miiboが作成している公式サイトを参考に、miiboにてエージェントの作成及び公開を行う。
+株式会社miiboが作成している公式サイトを参考に、miiboにてエージェントの作成、公開及びAPIの有効化を行ってください。
 - エージェントの作成
 - エージェントの公開
 - APIの有効化
