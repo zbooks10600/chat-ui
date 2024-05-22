@@ -88,9 +88,9 @@ ubuntuデスクトップをインストールする。
 2. `.env.local`ファイルに設定を追加する。
 > vi .env.local
 
-- `NEXT_PUBLIC_SUPABASE_URL`：上記5-3の`API URL`を設定
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記5-3の`anon key`を設定
-- `SUPABASE_SERVICE_ROLE_KEY`：上記5-3の`service_role key`を設定
+- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`を設定
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記6-3の`anon key`を設定
+- `SUPABASE_SERVICE_ROLE_KEY`：上記6-3の`service_role key`を設定
 
 ### 8. Chatbot UI 起動
 1. Chatbot UIを起動する
