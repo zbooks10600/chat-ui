@@ -7,8 +7,12 @@
 このフォークは [CTD Networks co.,Ltd](https://ctd.co.jp/) によって資金提供され、特定の機能追加と修正は [Flexsystems Inc.](https://www.flexsystems-inc.com/) によって行われました。
 
 ## 追加した機能
-
 - chatbot-uiからmiiboを呼び出せるように機能を追加しました。
+
+## 必要スペック
+- CPU：2コア以上
+- メモリ：4GB以上（16GB以上を推奨）
+- ストレージ：40GB以上（100GB以上を推奨）
 
 ## Chatbot UIインストール・セットアップ
 
