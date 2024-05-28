@@ -42,6 +42,9 @@ ubuntuデスクトップをインストールする。
 
 4. Node.jsをビルドする。
 > cd chatbot-ui/
+
+> npm install next@latest
+
 > npm run build
 
 ### 4. Docker Engineインストール
@@ -50,6 +53,7 @@ ubuntuデスクトップをインストールする。
 
 2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
 > sudo apt update
+
 > sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
 3. Docker公式のGPGキーを追加する。
@@ -60,6 +64,7 @@ ubuntuデスクトップをインストールする。
 
 5. パッケージリストを更新し、Docker Engineをインストールする。
 > sudo apt update
+
 > sudo apt install docker-ce docker-ce-cli containerd.io
 
 6. Dockerが正しくインストールされたかの確認する。
