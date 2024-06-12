@@ -28,7 +28,7 @@ ubuntuデスクトップをインストールする。
 > sudo apt install git curl
 
 3. chatbot-uiをクローンする
-> git clone https://github.com/mckaywrigley/chatbot-ui.git
+> git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
 
 ### 3. Node.jsインストール
 1. nvmをインストールをする。※最新のnvmを取得する際は、 v0.38.0 の部分を必要に応じて更新すること
