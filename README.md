@@ -41,7 +41,7 @@ ubuntuデスクトップをインストールする。
 > nvm install node
 
 4. Node.jsをビルドする。
-> cd chatbot-ui/
+> cd chatbot-ui-for-miibo/
 
 > npm install next@latest
 
@@ -72,7 +72,7 @@ ubuntuデスクトップをインストールする。
 
 ### 5. 依存関係インストール
 1. ディレクトリの移動する。
-> cd chatbot-ui
+> cd chatbot-ui-for-miibo
 
 2. 依存パッケージのインストールする。
 > npm install
