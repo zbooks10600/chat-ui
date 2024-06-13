@@ -97,7 +97,11 @@ ubuntuデスクトップをインストールする。
 2. `.env.local`ファイルに設定を追加する。
 > vi .env.local
 
-- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`を設定
+- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`のIP部分を自身のIPに置き換えて設定
+```例
+# Supabase Public
+NEXT_PUBLIC_SUPABASE_URL=http://XXX.XXX.XXX.XXX:54321`
+```
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記6-3の`anon key`を設定
 - `SUPABASE_SERVICE_ROLE_KEY`：上記6-3の`service_role key`を設定
 
