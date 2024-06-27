@@ -87,7 +87,7 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io
 ```
 
-6. `docker.sock` の実行権限の実行グループに割り当てる。
+6. `docker.sock` の実行グループに権限を割り当てる。
 ```
 sudo chown $(whoami) ///var/run/docker.sock
 ```
