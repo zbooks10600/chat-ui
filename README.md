@@ -55,7 +55,11 @@ nvm install node
 4. Node.jsをビルドする。
 ```
 cd chatbot-ui-for-miibo/
+```
+```
 npm install next@latest
+```
+```
 npm run build
 ```
 
@@ -68,6 +72,8 @@ sudo apt remove docker docker-engine docker.io containerd runc
 2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
 ```
 sudo apt update
+```
+```
 sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 ```
 
@@ -84,6 +90,8 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 5. パッケージリストを更新し、Docker Engineをインストールする。
 ```
 sudo apt update
+```
+```
 sudo apt install docker-ce docker-ce-cli containerd.io
 ```
 
@@ -92,7 +100,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io
 sudo chown $(whoami) ///var/run/docker.sock
 ```
 
-7. Dockerが正しくインストールされたかの確認する。
+7. Dockerが正しくインストールされたかを確認する。
 ```
 sudo docker --version
 ```
@@ -108,8 +116,71 @@ cd chatbot-ui-for-miibo
 npm install
 ```
 
-### 6. Supabase CLIインストール
-1. Supabase CLIをインストールする。　※Homebrewは事前にインストールしておいてください。
+### 6. Homebrewインストール
+1. 必要なパッケージをインストールする。
+```
+sudo apt install build-essential procps file
+```
+
+2. Homebrewをインストールする。
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+※インストールが完了すると下記のメッセージが出力される
+```ログ
+==> Installation successful!
+
+==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+Read the analytics documentation (and how to opt-out) here:
+  https://docs.brew.sh/Analytics
+No analytics data has been sent yet (nor will any be during this install run).
+
+==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+  https://github.com/Homebrew/brew#donations
+
+==> Next steps:
+- Run these two commands in your terminal to add Homebrew to your PATH:
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+- Install Homebrew's dependencies if you have sudo access:
+    sudo apt-get install build-essential
+  For more information, see:
+    https://docs.brew.sh/Homebrew-on-Linux
+- We recommend that you install GCC:
+    brew install gcc
+- Run brew help to get started
+- Further documentation:
+    https://docs.brew.sh
+```
+
+3. インストールメッセージの「Next steps」を実行する。
+- PATHにHomebrewを追加します。
+※(`/home/$(whoami)/.bashrc`は各環境のPATHを指定)
+```
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
+```
+```
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+- Homebrewの依存パッケージをインストールする。
+```
+sudo apt-get install build-essential
+```
+
+- GCCをインストールする。
+```
+brew install gcc
+```
+
+4. Homebrewバージョンを確認して、pathが通っていることを確認する。
+```
+brew --version
+```
+
+### 7. Supabase CLIインストール
+1. Supabase CLIをインストールする。
 ```
 brew install supabase/tap/supabase
 ```
@@ -127,7 +198,7 @@ supabase status
 - `anon key`
 - `service_role key`
 
-### 7. 環境設定
+### 8. 環境設定
 1. `.env.local`ファイルを作成する。
 ```
 cp .env.local.example .env.local
@@ -146,7 +217,7 @@ NEXT_PUBLIC_SUPABASE_URL=http://XXX.XXX.XXX.XXX:54321`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記6-3の`anon key`を設定
 - `SUPABASE_SERVICE_ROLE_KEY`：上記6-3の`service_role key`を設定
 
-### 8. Chatbot UI 起動
+### 9. Chatbot UI 起動
 1. Chatbot UIを起動する
 ```
 npm run chat
