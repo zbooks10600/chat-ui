@@ -22,80 +22,121 @@ ubuntuデスクトップをインストールする。
 
 ### 2. chatbot-uiクローン
 1. アップデートできるパッケージを確認する。
-> sudo apt update
+```
+sudo apt update
+```
 
 2. 必要なパッケージをインストールする。（Git、Curl）
-> sudo apt install git curl
+```
+sudo apt install git curl
+```
 
 3. chatbot-uiをクローンする
-> git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
+```
+git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
+```
 
 ### 3. Node.jsインストール
 1. nvmをインストールをする。※最新のnvmを取得する際は、 v0.38.0 の部分を必要に応じて更新すること
-> curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+```
 
 2. 設定更新をする。
-> source ~/.bashrc
+```
+source ~/.bashrc
+```
 
 3. Node.jsをインストールする。
-> nvm install node
+```
+nvm install node
+```
 
 4. Node.jsをビルドする。
-> cd chatbot-ui-for-miibo/
-
-> npm install next@latest
-
-> npm run build
+```
+cd chatbot-ui-for-miibo/
+npm install next@latest
+npm run build
+```
 
 ### 4. Docker Engineインストール
 1. 古いバージョンのDockerを削除する。
-> sudo apt remove docker docker-engine docker.io containerd runc
+```
+sudo apt remove docker docker-engine docker.io containerd runc
+```
 
 2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
-> sudo apt update
-
-> sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+```
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+```
 
 3. Docker公式のGPGキーを追加する。
-> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
 
 4. Dockerのリポジトリを追加する。
-> sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
 
 5. パッケージリストを更新し、Docker Engineをインストールする。
-> sudo apt update
+```
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+```
 
-> sudo apt install docker-ce docker-ce-cli containerd.io
+6. `docker.sock` の実行権限の実行グループに割り当てる。
+```
+sudo chown $(whoami) ///var/run/docker.sock
+```
 
-6. Dockerが正しくインストールされたかの確認する。
-> sudo docker --version
+7. Dockerが正しくインストールされたかの確認する。
+```
+sudo docker --version
+```
 
 ### 5. 依存関係インストール
 1. ディレクトリの移動する。
-> cd chatbot-ui-for-miibo
+```
+cd chatbot-ui-for-miibo
+```
 
 2. 依存パッケージのインストールする。
-> npm install
+```
+npm install
+```
 
 ### 6. Supabase CLIインストール
 1. Supabase CLIをインストールする。　※Homebrewは事前にインストールしておいてください。
-> brew install supabase/tap/supabase
+```
+brew install supabase/tap/supabase
+```
 
 2. Supabaseの起動する。
-> supabase start
+```
+supabase start
+```
 
 3. 設定値を取得する。
-> supabase status
+```
+supabase status
+```
 - `API URL`
 - `anon key`
 - `service_role key`
 
 ### 7. 環境設定
 1. `.env.local`ファイルを作成する。
-> cp .env.local.example .env.local
+```
+cp .env.local.example .env.local
+```
 
 2. `.env.local`ファイルに設定を追加する。
-> vi .env.local
+```
+vi .env.local
+```
 
 - `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`のIP部分を自身のIPに置き換えて設定
 ```例
@@ -107,8 +148,9 @@ NEXT_PUBLIC_SUPABASE_URL=http://XXX.XXX.XXX.XXX:54321`
 
 ### 8. Chatbot UI 起動
 1. Chatbot UIを起動する
-> npm run chat
-
+```
+npm run chat
+```
 
 ## miiboの設定
 
