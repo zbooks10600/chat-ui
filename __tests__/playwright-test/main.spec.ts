@@ -138,7 +138,7 @@ test('Check on logo element exists', async ({ page }) => {
 
   test('Delete the workspace', async ({ page }) => {
 
-    await page.goto('localhost:3000/*/chat');
+    await page.goto('http://localhost:3000/*/chat');
   
     const dialogSelector = '[role="dialog"]';
     await page.waitForSelector(dialogSelector, { state: 'visible' });
