@@ -172,7 +172,7 @@ test('Check on logo element exists', async ({ page }) => {
 
   test('Profile button exist', async ({ page }) => {
     // Navigate to the page containing the button and the side panel
-    await page.goto('localhost:3000/*/chat"', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:3000/*/chat', { waitUntil: 'networkidle' });
 
     const locator = await page.getByTestId('#userButtonOpenMenu');
 
