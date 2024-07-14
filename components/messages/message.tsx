@@ -98,7 +98,7 @@ export const Message: FC<MessageProps> = ({
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (isEditing && event.key === "Enter" && event.metaKey) {
+    if (isEditing && event.key === "Enter" && (event.metaKey || event.ctrlKey) ) {
       handleSendEdit()
     }
   }
