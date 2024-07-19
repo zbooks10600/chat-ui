@@ -30,7 +30,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     handleFocusChatInput()
   })
 
-  const [isTyping, setIsTyping] = useState<boolean>(false)  
+  const [isTyping, setIsTyping] = useState<boolean>(false)
 
   const {
     isAssistantPickerOpen,
