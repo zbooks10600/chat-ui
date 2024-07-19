@@ -264,9 +264,9 @@ supabase start
 ```
 supabase status
 ```
- - `API URL`
- - `anon key`
- - `service_role key`
+- `API URL`
+- `anon key`
+- `service_role key`
 
 ### 8. 環境設定
 1. `.env.local`ファイルを作成する。
