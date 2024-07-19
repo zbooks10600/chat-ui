@@ -58,7 +58,7 @@ git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
 ```
 
 ### 3. Node.jsインストール
-1. mvmをインストールする。  
+1. nvmをインストールする。  
 ※最新のnvmを取得する際は、v0.39.7 の部分を更新すること
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
