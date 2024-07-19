@@ -220,7 +220,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
         <input
           type="checkbox"
           checked={sendOnEnter}
-          onChange={toggleSendEnter}
+          onChange={toggleSendOnEnter}
         />
         <label>Line Break On Enter</label>
       </div>
