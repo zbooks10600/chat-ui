@@ -1,292 +1,441 @@
-# Chatbot UI
+# Chatbot UI For miibo
 
-The open-source AI chat app for everyone.
+このプロジェクトは [chatbot-ui](https://github.com/mckaywrigley/chatbot-ui) のフォークです。
 
-<img src="./public/readme/screenshot.png" alt="Chatbot UI" width="600">
+オリジナルの作成者は [Mckay Wrigley](https://github.com/mckaywrigley) です。
 
-## Demo
+このフォークは [CTD Networks co.,Ltd](https://ctd.co.jp/) によって資金提供され、特定の機能追加と修正は [Flexsystems Inc.](https://www.flexsystems-inc.com/) によって行われました。
 
-View the latest demo [here](https://x.com/mckaywrigley/status/1738273242283151777?s=20).
+## 追加した機能
+- chatbot-uiからmiiboを呼び出せるように機能を追加しました。
 
-## Updates
+## 必要スペック
+- CPU：2コア以上
+- メモリ：4GB以上（16GB以上を推奨）
+- ストレージ：40GB以上（100GB以上を推奨）
 
-Hey everyone! I've heard your feedback and am working hard on a big update.
+## Chatbot UIインストール・セットアップ
 
-Things like simpler deployment, better backend compatibility, and improved mobile layouts are on their way.
+### 1. ubuntuインストール
 
-Be back soon.
+1. ubuntuデスクトップをインストールする  
+ ※今回は、バージョン「22.04.4」をインストールする。
+2. root権限で作業する
 
--- Mckay
+ - root権限に昇格する
+ 
+ ```
+ sudo su -
+ ```
 
-## Official Hosted Version
+ - rootと表示されることを確認する
+ 
+ ```
+ whoami
+ ```
+ 
+ - ```/root/``` に移動する
+ 
+ ```
+ cd /root/
+ ```
 
-Use Chatbot UI without having to host it yourself!
 
-Find the official hosted version of Chatbot UI [here](https://chatbotui.com).
-
-## Sponsor
-
-If you find Chatbot UI useful, please consider [sponsoring](https://github.com/sponsors/mckaywrigley) me to support my open-source work :)
-
-## Issues
-
-We restrict "Issues" to actual issues related to the codebase.
-
-We're getting excessive amounts of issues that amount to things like feature requests, cloud provider issues, etc.
-
-If you are having issues with things like setup, please refer to the "Help" section in the "Discussions" tab above.
-
-Issues unrelated to the codebase will likely be closed immediately.
-
-## Discussions
-
-We highly encourage you to participate in the "Discussions" tab above!
-
-Discussions are a great place to ask questions, share ideas, and get help.
-
-Odds are if you have a question, someone else has the same question.
-
-## Legacy Code
-
-Chatbot UI was recently updated to its 2.0 version.
-
-The code for 1.0 can be found on the `legacy` branch.
-
-## Updating
-
-In your terminal at the root of your local Chatbot UI repository, run:
-
-```bash
-npm run update
+### 2. chatbot-uiクローン
+1. アップデートできるパッケージを確認する。
+```
+sudo apt update
 ```
 
-If you run a hosted instance you'll also need to run:
-
-```bash
-npm run db-push
+2. 必要なパッケージをインストールする。（Git、Curl）
+```
+sudo apt install git curl
 ```
 
-to apply the latest migrations to your live database.
-
-## Local Quickstart
-
-Follow these steps to get your own Chatbot UI instance running locally.
-
-You can watch the full video tutorial [here](https://www.youtube.com/watch?v=9Qq3-7-HNgw).
-
-### 1. Clone the Repo
-
-```bash
-git clone https://github.com/mckaywrigley/chatbot-ui.git
+3. chatbot-uiをクローンする
+```
+git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
 ```
 
-### 2. Install Dependencies
+### 3. Node.jsインストール
+1. nvmをインストールする。  
+※最新のnvmを取得する際は、v0.39.7 の部分を更新すること
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
 
-Open a terminal in the root directory of your local Chatbot UI repository and run:
+2. 設定更新をする。
+```
+source ~/.bashrc
+```
 
-```bash
+3. Node.jsをインストールする。
+```
+nvm install --lts --latest-npm
+```
+
+4. Next.jsをインストールする。
+```
+cd /root/chatbot-ui-for-miibo/
+```
+```
+npm install @jridgewell/sourcemap-codec @rollup/plugin-terser workbox-background-sync --save
+```
+```
+npm install next@latest --save
+```
+
+5. Node.jsをビルドする。
+```
+cd /root/chatbot-ui-for-miibo/
+```
+```
+npm run build
+```
+
+### 4. Docker Engineインストール
+1. 古いバージョンのDockerを削除する。
+```
+sudo apt remove docker docker-engine docker.io containerd runc
+```
+
+2. パッケージリストを更新し、Dockerインストール用の依存関係をインストールする。
+```
+sudo apt update
+```
+```
+sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+```
+
+3. Docker公式のGPGキーを追加する。
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+4. Dockerのリポジトリを追加する。
+```
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+5. パッケージリストを更新し、Docker Engineをインストールする。
+```
+sudo apt update
+```
+```
+sudo apt install docker-ce docker-ce-cli containerd.io
+```
+
+6. `docker.sock` の実行グループに権限を割り当てる。
+```
+sudo chown $(whoami) ///var/run/docker.sock
+```
+
+7. Dockerが正しくインストールされたかを確認する。
+```
+sudo docker --version
+```
+
+### 5. 依存関係インストール
+1. ディレクトリを移動する。
+```
+cd /root/chatbot-ui-for-miibo
+```
+
+2. 依存パッケージのインストールする。
+```
 npm install
 ```
 
-### 3. Install Supabase & Run Locally
+### 6. Homebrewインストール
+1. 必要なパッケージをインストールする。
+```
+sudo apt install build-essential procps file
+```
 
-#### Why Supabase?
+2. Homebrewをインストールする。  
+ - root権限からユーザに戻る。
+```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
+ - ユーザ権限でHomebrewインストールを実行する。
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+ - ※インストールが完了すると下記のメッセージが出力される
+ 
+ ```ログ
+ ==> Installation successful!
 
-Previously, we used local browser storage to store data. However, this was not a good solution for a few reasons:
+ ==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+ Read the analytics documentation (and how to opt-out) here:
+   https://docs.brew.sh/Analytics
+ No analytics data has been sent yet (nor will any be during this install run).
 
-- Security issues
-- Limited storage
-- Limits multi-modal use cases
+ ==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+   https://github.com/Homebrew/brew#donations
 
-We now use Supabase because it's easy to use, it's open-source, it's Postgres, and it has a free tier for hosted instances.
+ ==> Next steps:
+ - Run these two commands in your terminal to add Homebrew to your PATH:
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+ - Install Homebrew's dependencies if you have sudo access:
+    sudo apt-get install build-essential
+  For more information, see:
+    https://docs.brew.sh/Homebrew-on-Linux
+ - We recommend that you install GCC:
+    brew install gcc
+ - Run brew help to get started
+ - Further documentation:
+    https://docs.brew.sh
+ ```
 
-We will support other providers in the future to give you more options.
+3. インストールメッセージの「Next steps」を実行する。
+ - PATHにHomebrewを追加します。
+    - root権限
+    ```
+    sudo su -
+    ```
+    ```
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /$(whoami)/.bashrc
+    ```
+    ```
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    ```
 
-#### 1. Install Docker
+    - ユーザ権限
+    ```
+    [ "$(whoami)" = "root" ] && cd / && exit
+    ```
+    ```
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
+    ```
+    ```
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    ```
 
-You will need to install Docker to run Supabase locally. You can download it [here](https://docs.docker.com/get-docker) for free.
+4. Homebrewの依存パッケージをインストールする。
+```
+sudo apt-get install build-essential
+```
 
-#### 2. Install Supabase CLI
+5. GCCをインストールする。
+```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
+```
+brew install gcc
+```
 
-**MacOS/Linux**
+4. バージョンを確認して、pathが通っていることを確認する。
+```
+sudo su -
+```
+```
+brew --version
+```
+```
+gcc --version
+```
 
-```bash
+### 7. Supabase CLIインストール
+1. Supabase CLIをインストールする。
+```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
+```
 brew install supabase/tap/supabase
 ```
 
-**Windows**
-
-```bash
-scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-scoop install supabase
+2. Supabaseを起動する。
 ```
-
-#### 3. Start Supabase
-
-In your terminal at the root of your local Chatbot UI repository, run:
-
-```bash
+sudo su -
+```
+```
+cd /root/chatbot-ui-for-miibo
+```
+```
+ supabase init --force
+```
+```
 supabase start
 ```
 
-### 4. Fill in Secrets
+3. 設定値を取得する。
+```
+supabase status
+```
+- `API URL`
+- `anon key`
+- `service_role key`
 
-#### 1. Environment Variables
-
-In your terminal at the root of your local Chatbot UI repository, run:
-
-```bash
+### 8. 環境設定
+1. `.env.local`ファイルを作成する。
+```
+cd /root/chatbot-ui-for-miibo
+```
+```
 cp .env.local.example .env.local
 ```
 
-Get the required values by running:
-
-```bash
-supabase status
+2. `.env.local`ファイルに設定を追加する。
+```
+vi .env.local
 ```
 
-Note: Use `API URL` from `supabase status` for `NEXT_PUBLIC_SUPABASE_URL`
 
-Now go to your `.env.local` file and fill in the values.
-
-If the environment variable is set, it will disable the input in the user settings.
-
-#### 2. SQL Setup
-
-In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you will need to replace 2 values with the values you got above:
-
-- `project_url` (line 53): `http://supabase_kong_chatbotui:8000` (default) can remain unchanged if you don't change your `project_id` in the `config.toml` file
-- `service_role_key` (line 54): You got this value from running `supabase status`
-
-This prevents issues with storage files not being deleted properly.
-
-### 5. Install Ollama (optional for local models)
-
-Follow the instructions [here](https://github.com/jmorganca/ollama#macos).
-
-### 6. Run app locally
-
-In your terminal at the root of your local Chatbot UI repository, run:
-
-```bash
-npm run chat
+- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`のIP部分を自身のIPに置き換えて設定  
+※nginxでのURLプロキシ連携していない場合は必須。  
+※URLプロキシ連携している場合は、空欄```NEXT_PUBLIC_SUPABASE_URL=```のままで良い。
+```例
+# Supabase Public
+NEXT_PUBLIC_SUPABASE_URL=http://XXX.XXX.XXX.XXX:54321`
 ```
 
-Your local instance of Chatbot UI should now be running at [http://localhost:3000](http://localhost:3000). Be sure to use a compatible node version (i.e. v18).
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記7-3の`anon key`を設定
+- `SUPABASE_SERVICE_ROLE_KEY`：上記7-3の`service_role key`を設定
 
-You can view your backend GUI at [http://localhost:54323/project/default/editor](http://localhost:54323/project/default/editor).
 
-## Hosted Quickstart
+### 9. シェルスクリプトによる自動起動準備
+**サーバー内でcronを利用した設定になります。**
 
-Follow these steps to get your own Chatbot UI instance running in the cloud.
+1. start-chatbot.sh の生成  
+ - ヒアドキュメント形式で必要な設定を書き込む
 
-Video tutorial coming soon.
+    ```
+    sudo bash -c "cat << EOF > /$(whoami)/start-chatbot.sh
+    #\!/bin/bash
 
-### 1. Follow Local Quickstart
+    # Ensure the script runs with the user's environment
+    export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
 
-Repeat steps 1-4 in "Local Quickstart" above.
+    # Change ownership of the Docker socket
+    chown $(whoami) /var/run/docker.sock
 
-You will want separate repositories for your local and hosted instances.
+    # Navigate to the chatbot directory
+    cd /$(whoami)/chatbot-ui-for-miibo
 
-Create a new repository for your hosted instance of Chatbot UI on GitHub and push your code to it.
+    # Start the chatbot
+    npm run chat:start &"    
+    ```
 
-### 2. Setup Backend with Supabase
+ - 「```\```」を消す
+ 
+    ```
+    sudo sed -i 's/\\//' /$(whoami)/start-chatbot.sh
+    ```
 
-#### 1. Create a new project
+ - 正しく書き込まれたことの確認
+ 
+    ```
+    sudo cat /$(whoami)/start-chatbot.sh
+    ```
 
-Go to [Supabase](https://supabase.com/) and create a new project.
+2. cron設定
 
-#### 2. Get Project Values
+ - crontabコマンドで編集を呼び出す
+    ```
+    sudo crontab -e
+    ```
 
-Once you are in the project dashboard, click on the "Project Settings" icon tab on the far bottom left.
+ - 最終行に以下をコピーする
+    ```
+    @reboot sleep 20 && sh /root/start-chatbot.sh
+    ```
 
-Here you will get the values for the following environment variables:
+### 10. Nginxの導入・設定
+1. Nginxのインストール
+    ```
+    sudo apt install nginx
+    ```
+2. Nginxの設定
 
-- `Project Ref`: Found in "General settings" as "Reference ID"
+ - proxy_pathを利用して3000ポートを80ポートにリダイレクト。
+    ```
+    sudo nano /etc/nginx/sites-available/default
+    ```
+    ```
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+        ↓
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                # try_files $uri $uri/ =404;
 
-- `Project ID`: Found in the URL of your project dashboard (Ex: https://supabase.com/dashboard/project/<YOUR_PROJECT_ID>/settings/general)
+                proxy_pass http://127.0.0.1:3000/;
+                proxy_http_version 1.1;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
 
-While still in "Settings" click on the "API" text tab on the left.
+        location /_next/static {
+            alias /root/chatbot-ui-for-miibo/.next/static;
+            add_header Cache-Control "public, max-age=3600, immutable";
+        }
+    ```
 
-Here you will get the values for the following environment variables:
+ - nginxユーザーをrootに設定
+    ```
+    sudo nano /etc/nginx/nginx.conf
+    ```
+    ```
+    user www-data
+    ↓
+    user root
+    ```
+ 
+ - 正しく書き込まれたことの確認
+    ```
+    sudo nginx -t
+    ```
 
-- `Project URL`: Found in "API Settings" as "Project URL"
+ - nginxサーバーを再起動
+    ```
+    sudo systemctl restart nginx
+    ```
 
-- `Anon key`: Found in "Project API keys" as "anon public"
+### 11. Chatbot UI 起動
+   ```
+   sh /root/start-chatbot.sh
+   ```
 
-- `Service role key`: Found in "Project API keys" as "service_role" (Reminder: Treat this like a password!)
+## miiboの設定
 
-#### 3. Configure Auth
+### エージェントの作成～公開
+株式会社miiboが作成している公式サイトを参考に、miiboにてエージェントの作成、公開及びAPIの有効化を行ってください。
+- エージェントの作成
+- エージェントの公開
+- APIの有効化
 
-Next, click on the "Authentication" icon tab on the far left.
+## Chatbot UIの設定
+### miiboとの接続
 
-In the text tabs, click on "Providers" and make sure "Email" is enabled.
+"+ New Model"の接続情報に以下値を設定してください。
 
-We recommend turning off "Confirm email" for your own personal instance.
+`Name`：`miibo`と設定
+※miibo以外の値を設定するとmiiboと接続できませんのでご注意ください。
 
-#### 4. Connect to Hosted DB
+`Model ID`：miiboの"APIの設定"に記載してある`AGENT ID`の値を設定
 
-Open up your repository for your hosted instance of Chatbot UI.
+`Base URL`：`https://api-mebo.dev/api`と設定
 
-In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you will need to replace 2 values with the values you got above:
+`API Key`：miiboの"APIの設定"に記載してある`API KEY`の値を設定
 
-- `project_url` (line 53): Use the `Project URL` value from above
-- `service_role_key` (line 54): Use the `Service role key` value from above
+`Max Context Length`：使用しません
 
-Now, open a terminal in the root directory of your local Chatbot UI repository. We will execute a few commands here.
 
-Login to Supabase by running:
+## その他
 
-```bash
-supabase login
-```
+その他情報はオリジナルのリポジトリである [chatbot-ui](https://github.com/mckaywrigley/chatbot-ui) をご確認ください。
 
-Next, link your project by running the following command with the "Project ID" you got above:
+## 問合せ先
 
-```bash
-supabase link --project-ref <project-id>
-```
+Mckay様への連絡 [Twitter/X](https://twitter.com/mckaywrigley)
 
-Your project should now be linked.
-
-Finally, push your database to Supabase by running:
-
-```bash
-supabase db push
-```
-
-Your hosted database should now be set up!
-
-### 3. Setup Frontend with Vercel
-
-Go to [Vercel](https://vercel.com/) and create a new project.
-
-In the setup page, import your GitHub repository for your hosted instance of Chatbot UI. Within the project Settings, in the "Build & Development Settings" section, switch Framework Preset to "Next.js".
-
-In environment variables, add the following from the values you got above:
-
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_OLLAMA_URL` (only needed when using local Ollama models; default: `http://localhost:11434`)
-
-You can also add API keys as environment variables.
-
-- `OPENAI_API_KEY`
-- `AZURE_OPENAI_API_KEY`
-- `AZURE_OPENAI_ENDPOINT`
-- `AZURE_GPT_45_VISION_NAME`
-
-For the full list of environment variables, refer to the '.env.local.example' file. If the environment variables are set for API keys, it will disable the input in the user settings.
-
-Click "Deploy" and wait for your frontend to deploy.
-
-Once deployed, you should be able to use your hosted instance of Chatbot UI via the URL Vercel gives you.
-
-## Contributing
-
-We are working on a guide for contributing.
-
-## Contact
-
-Message Mckay on [Twitter/X](https://twitter.com/mckaywrigley)
+フレックシステムズ株式会社への連絡 [Contact Us](https://www.flexsystems-inc.com/contact/)

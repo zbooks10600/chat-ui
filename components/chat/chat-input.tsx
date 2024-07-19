@@ -81,8 +81,13 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     }, 200) // FIX: hacky
   }, [selectedPreset, selectedAssistant])
 
+  const [sendOnEnter, setSendOnEnter] = useState<boolean>(false)
+  const toggleSendOnEnter = () => {
+    setSendOnEnter(!sendOnEnter)
+  }
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!isTyping && event.key === "Enter" && !event.shiftKey) {
+    if (!isTyping && ((sendOnEnter && event.key === "Enter" && event.shiftKey) || (!sendOnEnter && event.key === "Enter" && !event.shiftKey))) {
       event.preventDefault()
       setIsPromptPickerOpen(false)
       handleSendMessage(userInput, chatMessages, false)
@@ -209,6 +214,15 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
             </div>
           </div>
         )}
+      </div>
+      
+      <div>
+        <input
+          type="checkbox"
+          checked={sendOnEnter}
+          onChange={toggleSendOnEnter}
+        />
+        <label>Line Break On Enter</label>
       </div>
 
       <div className="border-input relative mt-3 flex min-h-[60px] w-full items-center justify-center rounded-xl border-2">
