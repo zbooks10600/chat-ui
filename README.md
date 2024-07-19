@@ -17,8 +17,29 @@
 ## Chatbot UIインストール・セットアップ
 
 ### 1. ubuntuインストール
-ubuntuデスクトップをインストールする。
-※今回は、バージョン「22.04.4」をインストールする
+
+1. ubuntuデスクトップをインストールする  
+ ※今回は、バージョン「22.04.4」をインストールする。
+2. root権限で作業する
+
+ - root権限に昇格する
+ 
+ ```
+ sudo su -
+ ```
+
+ - rootと表示されることを確認する
+ 
+ ```
+ whoami
+ ```
+ 
+ - ```/root/``` に移動する
+ 
+ ```
+ cd /root/
+ ```
+
 
 ### 2. chatbot-uiクローン
 1. アップデートできるパッケージを確認する。
@@ -37,9 +58,10 @@ git clone https://github.com/Flexsystems-inc/chatbot-ui-for-miibo.git
 ```
 
 ### 3. Node.jsインストール
-1. nvmをインストールをする。※最新のnvmを取得する際は、 v0.38.0 の部分を必要に応じて更新すること
+1. mvmをインストールする。  
+※最新のnvmを取得する際は、v0.39.7 の部分を更新すること
 ```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
 2. 設定更新をする。
@@ -49,15 +71,23 @@ source ~/.bashrc
 
 3. Node.jsをインストールする。
 ```
-nvm install node
+nvm install --lts --latest-npm
 ```
 
-4. Node.jsをビルドする。
+4. Next.jsをインストールする。
 ```
-cd chatbot-ui-for-miibo/
+cd /root/chatbot-ui-for-miibo/
 ```
 ```
-npm install next@latest
+npm install @jridgewell/sourcemap-codec @rollup/plugin-terser workbox-background-sync --save
+```
+```
+npm install next@latest --save
+```
+
+5. Node.jsをビルドする。
+```
+cd /root/chatbot-ui-for-miibo/
 ```
 ```
 npm run build
@@ -106,9 +136,9 @@ sudo docker --version
 ```
 
 ### 5. 依存関係インストール
-1. ディレクトリの移動する。
+1. ディレクトリを移動する。
 ```
-cd chatbot-ui-for-miibo
+cd /root/chatbot-ui-for-miibo
 ```
 
 2. 依存パッケージのインストールする。
@@ -122,70 +152,110 @@ npm install
 sudo apt install build-essential procps file
 ```
 
-2. Homebrewをインストールする。
+2. Homebrewをインストールする。  
+ - root権限からユーザに戻る。
+```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
+ - ユーザ権限でHomebrewインストールを実行する。
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
+ - ※インストールが完了すると下記のメッセージが出力される
+ 
+ ```ログ
+ ==> Installation successful!
 
-※インストールが完了すると下記のメッセージが出力される
-```ログ
-==> Installation successful!
+ ==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+ Read the analytics documentation (and how to opt-out) here:
+   https://docs.brew.sh/Analytics
+ No analytics data has been sent yet (nor will any be during this install run).
 
-==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
-Read the analytics documentation (and how to opt-out) here:
-  https://docs.brew.sh/Analytics
-No analytics data has been sent yet (nor will any be during this install run).
+ ==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+   https://github.com/Homebrew/brew#donations
 
-==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
-  https://github.com/Homebrew/brew#donations
-
-==> Next steps:
-- Run these two commands in your terminal to add Homebrew to your PATH:
+ ==> Next steps:
+ - Run these two commands in your terminal to add Homebrew to your PATH:
     (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-- Install Homebrew's dependencies if you have sudo access:
+ - Install Homebrew's dependencies if you have sudo access:
     sudo apt-get install build-essential
   For more information, see:
     https://docs.brew.sh/Homebrew-on-Linux
-- We recommend that you install GCC:
+ - We recommend that you install GCC:
     brew install gcc
-- Run brew help to get started
-- Further documentation:
+ - Run brew help to get started
+ - Further documentation:
     https://docs.brew.sh
-```
+ ```
 
 3. インストールメッセージの「Next steps」を実行する。
-- PATHにHomebrewを追加します。
-※(`/home/$(whoami)/.bashrc`は各環境のPATHを指定)
-```
-(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
-```
-```
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-```
+ - PATHにHomebrewを追加します。
+    - root権限
+    ```
+    sudo su -
+    ```
+    ```
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /$(whoami)/.bashrc
+    ```
+    ```
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    ```
 
-- Homebrewの依存パッケージをインストールする。
+    - ユーザ権限
+    ```
+    [ "$(whoami)" = "root" ] && cd / && exit
+    ```
+    ```
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/$(whoami)/.bashrc
+    ```
+    ```
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    ```
+
+4. Homebrewの依存パッケージをインストールする。
 ```
 sudo apt-get install build-essential
 ```
 
-- GCCをインストールする。
+5. GCCをインストールする。
+```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
 ```
 brew install gcc
 ```
 
-4. Homebrewバージョンを確認して、pathが通っていることを確認する。
+4. バージョンを確認して、pathが通っていることを確認する。
+```
+sudo su -
+```
 ```
 brew --version
+```
+```
+gcc --version
 ```
 
 ### 7. Supabase CLIインストール
 1. Supabase CLIをインストールする。
 ```
+[ "$(whoami)" = "root" ] && cd / && exit
+```
+```
 brew install supabase/tap/supabase
 ```
 
-2. Supabaseの起動する。
+2. Supabaseを起動する。
+```
+sudo su -
+```
+```
+cd /root/chatbot-ui-for-miibo
+```
+```
+ supabase init --force
+```
 ```
 supabase start
 ```
@@ -194,12 +264,15 @@ supabase start
 ```
 supabase status
 ```
-- `API URL`
-- `anon key`
-- `service_role key`
+ - `API URL`
+ - `anon key`
+ - `service_role key`
 
 ### 8. 環境設定
 1. `.env.local`ファイルを作成する。
+```
+cd /root/chatbot-ui-for-miibo
+```
 ```
 cp .env.local.example .env.local
 ```
@@ -209,19 +282,128 @@ cp .env.local.example .env.local
 vi .env.local
 ```
 
-- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`のIP部分を自身のIPに置き換えて設定
+
+- `NEXT_PUBLIC_SUPABASE_URL`：上記6-3の`API URL`のIP部分を自身のIPに置き換えて設定  
+※nginxでのURLプロキシ連携していない場合は必須。  
+※URLプロキシ連携している場合は、空欄```NEXT_PUBLIC_SUPABASE_URL=```のままで良い。
 ```例
 # Supabase Public
 NEXT_PUBLIC_SUPABASE_URL=http://XXX.XXX.XXX.XXX:54321`
 ```
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記6-3の`anon key`を設定
-- `SUPABASE_SERVICE_ROLE_KEY`：上記6-3の`service_role key`を設定
 
-### 9. Chatbot UI 起動
-1. Chatbot UIを起動する
-```
-npm run chat
-```
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：上記7-3の`anon key`を設定
+- `SUPABASE_SERVICE_ROLE_KEY`：上記7-3の`service_role key`を設定
+
+
+### 9. シェルスクリプトによる自動起動準備
+**サーバー内でcronを利用した設定になります。**
+
+1. start-chatbot.sh の生成  
+ - ヒアドキュメント形式で必要な設定を書き込む
+
+    ```
+    sudo bash -c "cat << EOF > /$(whoami)/start-chatbot.sh
+    #\!/bin/bash
+
+    # Ensure the script runs with the user's environment
+    export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
+
+    # Change ownership of the Docker socket
+    chown $(whoami) /var/run/docker.sock
+
+    # Navigate to the chatbot directory
+    cd /$(whoami)/chatbot-ui-for-miibo
+
+    # Start the chatbot
+    npm run chat:start &"    
+    ```
+
+ - 「```\```」を消す
+ 
+    ```
+    sudo sed -i 's/\\//' /$(whoami)/start-chatbot.sh
+    ```
+
+ - 正しく書き込まれたことの確認
+ 
+    ```
+    sudo cat /$(whoami)/start-chatbot.sh
+    ```
+
+2. cron設定
+
+ - crontabコマンドで編集を呼び出す
+    ```
+    sudo crontab -e
+    ```
+
+ - 最終行に以下をコピーする
+    ```
+    @reboot sleep 20 && sh /root/start-chatbot.sh
+    ```
+
+### 10. Nginxの導入・設定
+1. Nginxのインストール
+    ```
+    sudo apt install nginx
+    ```
+2. Nginxの設定
+
+ - proxy_pathを利用して3000ポートを80ポートにリダイレクト。
+    ```
+    sudo nano /etc/nginx/sites-available/default
+    ```
+    ```
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+        ↓
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                # try_files $uri $uri/ =404;
+
+                proxy_pass http://127.0.0.1:3000/;
+                proxy_http_version 1.1;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+
+        location /_next/static {
+            alias /root/chatbot-ui-for-miibo/.next/static;
+            add_header Cache-Control "public, max-age=3600, immutable";
+        }
+    ```
+
+ - nginxユーザーをrootに設定
+    ```
+    sudo nano /etc/nginx/nginx.conf
+    ```
+    ```
+    user www-data
+    ↓
+    user root
+    ```
+ 
+ - 正しく書き込まれたことの確認
+    ```
+    sudo nginx -t
+    ```
+
+ - nginxサーバーを再起動
+    ```
+    sudo systemctl restart nginx
+    ```
+
+### 11. Chatbot UI 起動
+   ```
+   sh /root/start-chatbot.sh
+   ```
 
 ## miiboの設定
 
@@ -246,6 +428,7 @@ npm run chat
 `API Key`：miiboの"APIの設定"に記載してある`API KEY`の値を設定
 
 `Max Context Length`：使用しません
+
 
 ## その他
 
