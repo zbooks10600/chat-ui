@@ -160,7 +160,7 @@ export const CHAT_SETTING_LIMITS: Record<LLMID, ChatSettingLimits> = {
   "gpt-4o-mini": {
     MIN_TEMPERATURE: 0.0,
     MAX_TEMPERATURE: 2.0,
-    MAX_TOKEN_OUTPUT_LENGTH: 4096,
+    MAX_TOKEN_OUTPUT_LENGTH: 16383,
     MAX_CONTEXT_LENGTH: 128000
   },
 
