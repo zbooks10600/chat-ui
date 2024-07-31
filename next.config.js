@@ -10,6 +10,7 @@ module.exports = withBundleAnalyzer(
   withPWA({
     reactStrictMode: true,
     images: {
+      unoptimized: false,
       remotePatterns: [
         {
           protocol: "http",
@@ -22,7 +23,12 @@ module.exports = withBundleAnalyzer(
         {
           protocol: "https",
           hostname: "**"
-        }
+        },
+        {
+          protocol: 'https',
+          hostname: '**.supabase.co',
+          pathname: '/storage/v1/object/public/profile_images/**',
+        },
       ]
     },
     experimental: {
