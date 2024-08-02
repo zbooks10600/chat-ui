@@ -25,7 +25,7 @@ export const uploadFile = async (
     .from("files")
     .upload(filePath, file, {
       cacheControl: "3600",
-      upsert: true
+      upsert: false
     })
 
   if (error) {
