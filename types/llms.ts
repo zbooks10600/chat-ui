@@ -15,6 +15,7 @@ export type OpenAILLMID =
   | "gpt-4-vision-preview" // GPT-4 Vision
   | "gpt-4" // GPT-4
   | "gpt-3.5-turbo" // Updated GPT-3.5 Turbo
+  | "gpt-4o-mini" // GPT-4o Mini
 
 // Google Models
 export type GoogleLLMID =
@@ -22,6 +23,7 @@ export type GoogleLLMID =
   | "gemini-pro-vision" // Gemini Pro Vision
   | "gemini-1.5-pro-latest" // Gemini 1.5 Pro
   | "gemini-1.5-flash" // Gemini 1.5 Flash
+  | "gemini-1.5-pro-exp-0801" // Gemini 1.5 Pro Exp 0801
 
 // Anthropic Models
 export type AnthropicLLMID =
@@ -44,6 +46,11 @@ export type GroqLLMID =
   | "llama3-70b-8192" // LLaMA3-70b
   | "mixtral-8x7b-32768" // Mixtral-8x7b
   | "gemma-7b-it" // Gemma-7b IT
+  | "llama-3.1-405b-reasoning" // LLaMA31-405b
+  | "llama-3.1-70b-versatile" // LLaMA31-405b Instruct
+  | "llama-3.1-8b-instant" // LLaMA31-405b Chat
+  | "llama3-groq-70b-8192-tool-use-preview" // LLaMA3 Groq 70B Tool Use
+  | "llama3-groq-8b-8192-tool-use-preview" // LLaMA3 Groq 70B Translation
 
 // Perplexity Models (UPDATED 1/31/24)
 export type PerplexityLLMID =
