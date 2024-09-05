@@ -71,18 +71,18 @@ export default async function RootLayout({
   params: { locale }
 }: RootLayoutProps) {
   const cookieStore = cookies()
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        }
-      }
-    }
-  )
-  const session = (await supabase.auth.getSession()).data.session
+  // const supabase = createServerClient<Database>(
+  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  //   {
+  //     cookies: {
+  //       get(name: string) {
+  //         return cookieStore.get(name)?.value
+  //       }
+  //     }
+  //   }
+  // )
+  // const session = (await supabase.auth.getSession()).data.session
 
   const { t, resources } = await initTranslations(locale, i18nNamespaces)
 
@@ -97,7 +97,8 @@ export default async function RootLayout({
           >
             <Toaster richColors position="top-center" duration={3000} />
             <div className="bg-background text-foreground flex h-dvh flex-col items-center overflow-x-auto">
-              {session ? <GlobalState>{children}</GlobalState> : children}
+              {children}
+              {/* {session ? <GlobalState>{children}</GlobalState> : children} */}
             </div>
           </TranslationsProvider>
         </Providers>

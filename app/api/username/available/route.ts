@@ -1,5 +1,5 @@
 import { Database } from "@/supabase/types"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/lib/supabase/client"
 
 export const runtime = "edge"
 
@@ -10,10 +10,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabaseAdmin = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabaseAdmin = createClient()
 
     const { data: usernames, error } = await supabaseAdmin
       .from("profiles")
