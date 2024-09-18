@@ -13,13 +13,8 @@
     RUN npm run build
     
     # ---- Production ----
-    FROM python:3.9-slim AS production
+    FROM node:19-alpine AS production
     WORKDIR /app
-    
-    # Install Node.js
-    RUN apt-get update && apt-get install -y nodejs npm
-    
-    # Copy Node.js app
     COPY --from=dependencies /app/node_modules ./node_modules
     COPY --from=build /app/.next ./.next
     COPY --from=build /app/public ./public
@@ -27,15 +22,9 @@
     COPY --from=build /app/next.config.js ./next.config.js
     COPY --from=build /app/next-i18next.config.js ./next-i18next.config.js
     
-    # Copy Python app
-    COPY app.py ./
-    COPY requirements.txt ./
+    # Expose the port the app will run on
+    EXPOSE 3000
     
-    # Install Python dependencies
-    RUN pip install --no-cache-dir -r requirements.txt
+    # Start the application
+    CMD ["npm", "start"]
     
-    # Expose ports for Next.js and FastAPI
-    EXPOSE 3000 8000
-    
-    # Start both applications
-    CMD ["sh", "-c", "npm start & uvicorn app:app --host 0.0.0.0 --port 8000"]
