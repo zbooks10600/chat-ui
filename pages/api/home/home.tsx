@@ -271,11 +271,7 @@ const Home = ({
       });
     }
 
-    const localOpenApiServerUri = localStorage.getItem('openApiServerUri');
-
-    if (localOpenApiServerUri && localOpenApiServerUri !== '') {
-      dispatch({ field: 'openApiServerUri', value: localOpenApiServerUri });
-    }
+    dispatch({ field: 'openApiServerUri', value: 'http://0.0.0.0:23333' });
 
     const apiKey = localStorage.getItem('apiKey');
 
@@ -386,51 +382,23 @@ const Home = ({
       <main
         className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
       >
-        {openApiServerUri ? (
+        {selectedConversation && (
           <>
-            {selectedConversation && (
-              <>
-                <div className="fixed top-0 w-full sm:hidden">
-                  <Navbar
-                    selectedConversation={selectedConversation}
-                    onNewConversation={handleNewConversation}
-                  />
-                </div>
-
-                <div className="flex h-full w-full pt-[48px] sm:pt-0">
-                  <Chatbar />
-
-                  <div className="flex flex-1">
-                    <Chat stopConversationRef={stopConversationRef} />
-                  </div>
-
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center space-y-6">
-            <div className="max-w-md text-center">
-              <h2 className="mb-4 text-2xl font-bold">{t('Enter OpenAI API Endpoint')}</h2>
-              <p className="mb-4">{t('Please enter the OpenAI API endpoint to continue.')}</p>
-            </div>
-            <div className="w-full max-w-md">
-              <input
-                type="text"
-                className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-3 text-neutral-900 dark:border-neutral-400 dark:text-neutral-100"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder={t('Enter OpenAI API endpoint...') || ''}
+            <div className="fixed top-0 w-full sm:hidden">
+              <Navbar
+                selectedConversation={selectedConversation}
+                onNewConversation={handleNewConversation}
               />
             </div>
-            <button
-              type="button"
-              className="w-full max-w-md rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
-              onClick={() => handleSetOpenApiUri(value)}
-            >
-              {t('Save')}
-            </button>
-          </div>
+
+            <div className="flex h-full w-full pt-[48px] sm:pt-0">
+              <Chatbar />
+
+              <div className="flex flex-1">
+                <Chat stopConversationRef={stopConversationRef} />
+              </div>
+            </div>
+          </>
         )}
       </main>
     </HomeContext.Provider>

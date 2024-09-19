@@ -1,40 +1,19 @@
-import { IconFileExport, IconSettings, IconRefresh } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
-
-import { useTranslation } from 'next-i18next';
+import { IconSquareToggle } from '@tabler/icons-react';
+import { useContext } from 'react';
 
 import HomeContext from '@/pages/api/home/home.context';
 
-import { SettingDialog } from '@/components/Settings/SettingDialog';
-
-import { Import } from '../../Settings/Import';
-import { Key } from '../../Settings/Key';
 import { SidebarButton } from '../../Sidebar/SidebarButton';
 import ChatbarContext from '../Chatbar.context';
 import { ClearConversations } from './ClearConversations';
-import { PluginKeys } from './PluginKeys';
 
 export const ChatbarSettings = () => {
-  const { t } = useTranslation('sidebar');
-  const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
-
   const {
-    state: {
-      apiKey,
-      lightMode,
-      serverSideApiKeyIsSet,
-      serverSidePluginKeysSet,
-      conversations,
-    },
-    dispatch: homeDispatch,
+    state: { conversations, rag },
+    dispatch,
   } = useContext(HomeContext);
 
-  const {
-    handleClearConversations,
-    handleImportConversations,
-    handleExportData,
-    handleApiKeyChange,
-  } = useContext(ChatbarContext);
+  const { handleClearConversations } = useContext(ChatbarContext);
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
@@ -42,40 +21,10 @@ export const ChatbarSettings = () => {
         <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
 
-      <Import onImport={handleImportConversations} />
-
       <SidebarButton
-        text={t('Export data')}
-        icon={<IconFileExport size={18} />}
-        onClick={() => handleExportData()}
-      />
-
-      <SidebarButton
-        text={t('Settings')}
-        icon={<IconSettings size={18} />}
-        onClick={() => setIsSettingDialog(true)}
-      />
-
-      {!serverSideApiKeyIsSet ? (
-        <Key apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
-      ) : null}
-
-      {!serverSidePluginKeysSet ? <PluginKeys /> : null}
-
-      <SidebarButton
-        text={t('Reset API Endpoint')}
-        icon={<IconRefresh size={18} />}
-        onClick={() => {
-          localStorage.removeItem('openApiServerUri');
-          window.location.reload();
-        }}
-      />
-
-      <SettingDialog
-        open={isSettingDialogOpen}
-        onClose={() => {
-          setIsSettingDialog(false);
-        }}
+        text={rag ? 'Disable RAG' : 'Enable RAG'}
+        icon={<IconSquareToggle size={18} />}
+        onClick={() => dispatch({ field: 'rag', value: !rag })}
       />
     </div>
   );

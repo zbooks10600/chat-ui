@@ -28,6 +28,7 @@ export interface HomeInitialState {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   openApiServerUri: string | undefined;
+  rag: boolean;
 }
 
 export const initialState: HomeInitialState = {
@@ -53,4 +54,5 @@ export const initialState: HomeInitialState = {
   serverSideApiKeyIsSet: true,
   serverSidePluginKeysSet: false,
   openApiServerUri: undefined,
+  rag: true,
 };

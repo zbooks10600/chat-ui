@@ -19,6 +19,7 @@ import {
   updateConversation,
 } from '@/utils/app/conversation';
 import { throttle } from '@/utils/data/throttle';
+import { performClientSimilaritySearch } from '@/utils/similaritySearch';
 
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { Plugin } from '@/types/plugin';
@@ -33,8 +34,6 @@ import { MemoizedChatMessage } from './MemoizedChatMessage';
 import { ModelSelect } from './ModelSelect';
 import { SystemPrompt } from './SystemPrompt';
 import { TemperatureSlider } from './Temperature';
-
-import { performClientSimilaritySearch } from '@/utils/similaritySearch';
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>;
@@ -55,6 +54,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       modelError,
       loading,
       prompts,
+      rag,
     },
     handleUpdateConversation,
     dispatch: homeDispatch,
@@ -96,7 +96,9 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
         homeDispatch({ field: 'loading', value: true });
         homeDispatch({ field: 'messageIsStreaming', value: true });
 
-        const searchResults = await performClientSimilaritySearch(message.content);
+        const searchResults = await performClientSimilaritySearch(
+          message.content,
+        );
 
         console.log('Client-side search results:', searchResults);
 
@@ -107,7 +109,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
           key: apiKey,
           prompt: updatedConversation.prompt,
           temperature: updatedConversation.temperature,
-          searchResults: searchResults.map(result => `${result.title}: ${result.body}`).join('\n\n'),
+          searchResults: searchResults
+            .map((result) => `${result.title}: ${result.body}`)
+            .join('\n\n'),
+          rag,
         };
         const endpoint = getEndpoint(plugin);
         let body;
@@ -408,28 +413,26 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             {selectedConversation?.messages.length === 0 ? (
               <>
                 <div className="mx-auto flex flex-col space-y-5 md:space-y-10 px-3 pt-5 md:pt-12 sm:max-w-[600px]">
-  <div className="text-center text-3xl font-semibold text-white">
-    {models.length === 0 ? (
-      <div>
-        <Spinner size="16px" className="mx-auto" />
-      </div>
-    ) : (
-      'Nosana AI'
-    )}
-  </div>
-  {models.length > 0 && (
-    <div className="text-center text-xl text-white opacity-80">
-      For all your Nosana related questions
-    </div>
-  )}
-</div>
-
-
+                  <div className="text-center text-3xl font-semibold text-white">
+                    {models.length === 0 ? (
+                      <div>
+                        <Spinner size="16px" className="mx-auto" />
+                      </div>
+                    ) : rag ? (
+                      'Nosana AI'
+                    ) : (
+                      'Llama 3.1'
+                    )}
+                  </div>
+                  {rag && models.length > 0 && (
+                    <div className="text-center text-xl text-white opacity-80">
+                      For all your Nosana related questions
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
-
-
                 {selectedConversation?.messages.map((message, index) => (
                   <MemoizedChatMessage
                     key={index}
@@ -448,10 +451,7 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
 
                 {loading && <ChatLoader />}
 
-                <div
-                  className="h-[162px] bg-[#1c282a]"
-                  ref={messagesEndRef}
-                />
+                <div className="h-[162px] bg-[#1c282a]" ref={messagesEndRef} />
               </>
             )}
           </div>
