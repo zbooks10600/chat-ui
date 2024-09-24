@@ -1,6 +1,7 @@
 import React, { FC } from "react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex";
 import { MessageCodeBlock } from "./message-codeblock"
 import { MessageMarkdownMemoized } from "./message-markdown-memoized"
 
@@ -8,11 +9,20 @@ interface MessageMarkdownProps {
   content: string
 }
 
+const replaceMathDelimiters = (content: string) => {
+  return content
+    .replace(/\\\(/g, "$")
+    .replace(/\\\)/g, "$")
+    .replace(/\\\[/g, "\n$$")
+    .replace(/\\\]/g, "$$\n");
+};
+
 export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
   return (
     <MessageMarkdownMemoized
       className="prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 min-w-full space-y-6 break-words"
       remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[rehypeKatex]}
       components={{
         p({ children }) {
           return <p className="mb-2 last:mb-0">{children}</p>
@@ -59,7 +69,7 @@ export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
         }
       }}
     >
-      {content}
+      {replaceMathDelimiters(content)}
     </MessageMarkdownMemoized>
   )
 }
