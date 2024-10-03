@@ -5,8 +5,9 @@ import { TextareaAutosize } from "@/components/ui/textarea-autosize"
 import { ChatbotUIContext } from "@/context/context"
 import { TOOL_DESCRIPTION_MAX, TOOL_NAME_MAX } from "@/db/limits"
 import { validateOpenAPI } from "@/lib/openapi-conversion"
-import { TablesInsert } from "@/supabase/types"
 import { FC, useContext, useState } from "react"
+
+import type { TablesInsert } from "@/supabase/types"
 
 interface CreateToolProps {
   isOpen: boolean
@@ -37,7 +38,7 @@ export const CreateTool: FC<CreateToolProps> = ({ isOpen, onOpenChange }) => {
           url,
           custom_headers: customHeaders,
           schema
-        } as TablesInsert<"tools">
+        } as unknown as TablesInsert<"tools">
       }
       isOpen={isOpen}
       isTyping={isTyping}

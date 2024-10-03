@@ -1,9 +1,10 @@
-import { Tables } from "@/supabase/types"
 import { ContentType, DataListType } from "@/types"
 import { FC, useState } from "react"
 import { SidebarCreateButtons } from "./sidebar-create-buttons"
 import { SidebarDataList } from "./sidebar-data-list"
 import { SidebarSearch } from "./sidebar-search"
+
+import type { Tables } from "@/supabase/types"
 
 interface SidebarContentProps {
   contentType: ContentType

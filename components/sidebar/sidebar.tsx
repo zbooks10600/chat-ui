@@ -1,5 +1,4 @@
 import { ChatbotUIContext } from "@/context/context"
-import { Tables } from "@/supabase/types"
 import { ContentType } from "@/types"
 import { FC, useContext } from "react"
 import { SIDEBAR_WIDTH } from "../ui/dashboard"
@@ -7,6 +6,8 @@ import { TabsContent } from "../ui/tabs"
 import { WorkspaceSwitcher } from "../utility/workspace-switcher"
 import { WorkspaceSettings } from "../workspace/workspace-settings"
 import { SidebarContent } from "./sidebar-content"
+
+import type { Tables } from "@/supabase/types"
 
 interface SidebarProps {
   contentType: ContentType

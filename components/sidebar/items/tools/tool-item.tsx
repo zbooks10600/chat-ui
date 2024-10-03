@@ -3,10 +3,11 @@ import { Label } from "@/components/ui/label"
 import { TextareaAutosize } from "@/components/ui/textarea-autosize"
 import { TOOL_DESCRIPTION_MAX, TOOL_NAME_MAX } from "@/db/limits"
 import { validateOpenAPI } from "@/lib/openapi-conversion"
-import { Tables } from "@/supabase/types"
 import { IconBolt } from "@tabler/icons-react"
 import { FC, useState } from "react"
 import { SidebarItem } from "../all/sidebar-display-item"
+
+import type { Tables } from "@/supabase/types"
 
 interface ToolItemProps {
   tool: Tables<"tools">
@@ -18,9 +19,9 @@ export const ToolItem: FC<ToolItemProps> = ({ tool }) => {
   const [description, setDescription] = useState(tool.description)
   const [url, setUrl] = useState(tool.url)
   const [customHeaders, setCustomHeaders] = useState(
-    tool.custom_headers as string
+    tool.custom_headers as unknown as string
   )
-  const [schema, setSchema] = useState(tool.schema as string)
+  const [schema, setSchema] = useState(tool.schema as unknown as string)
   const [schemaError, setSchemaError] = useState("")
 
   return (

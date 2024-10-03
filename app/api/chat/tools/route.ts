@@ -1,10 +1,11 @@
 import { openapiToFunctions } from "@/lib/openapi-conversion"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
-import { Tables } from "@/supabase/types"
 import { ChatSettings } from "@/types"
 import { OpenAIStream, StreamingTextResponse } from "ai"
 import OpenAI from "openai"
 import { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs"
+
+import type { Tables } from "@/supabase/types"
 
 export async function POST(request: Request) {
   const json = await request.json()
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     for (const selectedTool of selectedTools) {
       try {
         const convertedSchema = await openapiToFunctions(
-          JSON.parse(selectedTool.schema as string)
+          JSON.parse(selectedTool.schema as unknown as string)
         )
         const tools = convertedSchema.functions || []
         allTools = allTools.concat(tools)
