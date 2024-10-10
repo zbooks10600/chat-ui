@@ -2,7 +2,7 @@ import { LLM } from "@/types"
 
 const GOOGLE_PLATORM_LINK = "https://ai.google.dev/"
 
-// Google Models (UPDATED 12/22/23) -----------------------------
+// Google Models (UPDATED 9/09/24) -----------------------------
 
 // Gemini 1.5 Flash
 const GEMINI_1_5_FLASH: LLM = {
@@ -31,9 +31,16 @@ const GEMINI_PRO: LLM = {
   provider: "google",
   hostedId: "gemini-pro",
   platformLink: GOOGLE_PLATORM_LINK,
-  imageInput: false
+  imageInput: true
 }
-
+const GEMINI_1_5_PRO_EXP0827: LLM = {
+  modelId: "gemini-1.5-pro-exp-0827",
+  modelName: "Gemini 1.5 Pro Experimental 0827",
+  provider: "google",
+  hostedId: "gemini-1.5-pro-exp-0827",
+  platformLink: GOOGLE_PLATORM_LINK,
+  imageInput: true
+}
 // Gemini Pro Vision (UPDATED 12/22/23)
 const GEMINI_PRO_VISION: LLM = {
   modelId: "gemini-pro-vision",
@@ -44,4 +51,10 @@ const GEMINI_PRO_VISION: LLM = {
   imageInput: true
 }
 
-export const GOOGLE_LLM_LIST: LLM[] = [GEMINI_PRO, GEMINI_PRO_VISION, GEMINI_1_5_PRO, GEMINI_1_5_FLASH]
+export const GOOGLE_LLM_LIST: LLM[] = [
+  GEMINI_PRO,
+  GEMINI_1_5_PRO_EXP0827,
+  GEMINI_PRO_VISION,
+  GEMINI_1_5_PRO,
+  GEMINI_1_5_FLASH
+]
