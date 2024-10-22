@@ -51,6 +51,19 @@ export const ModelIcon: FC<ModelIconProps> = ({
           height={height}
         />
       )
+    case "hexabot":
+      return (
+        <Image
+          className={cn(
+            "rounded-sm p-1",
+            theme === "dark" ? "bg-white" : "border-DEFAULT border-black"
+          )}
+          src={mistral.src}
+          alt="Hexabot"
+          width={width}
+          height={height}
+        />
+      )
     case "groq":
       return (
         <Image

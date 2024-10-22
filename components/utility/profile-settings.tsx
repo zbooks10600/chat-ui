@@ -113,10 +113,12 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
   const [perplexityAPIKey, setPerplexityAPIKey] = useState(
     profile?.perplexity_api_key || ""
   )
-
   const [openrouterAPIKey, setOpenrouterAPIKey] = useState(
     profile?.openrouter_api_key || ""
   )
+  // const [hexabotAPIKey, setHexabotAPIKey] = useState(
+  //   ""
+  // )
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -172,7 +174,8 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
       "mistral",
       "groq",
       "perplexity",
-      "openrouter"
+      "openrouter",
+      "hexabots"
     ]
 
     providers.forEach(async provider => {
@@ -671,6 +674,22 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       type="password"
                       value={mistralAPIKey}
                       onChange={e => setMistralAPIKey(e.target.value)}
+                    />
+                  </>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                {envKeyMap["hexabot"] ? (
+                  <Label>Hexabot API key set by admin.</Label>
+                ) : (
+                  <>
+                    <Label>Hexabot API Key</Label>
+                    <Input
+                      placeholder="Hexabot API Key"
+                      type="password"
+                      value=""
+                      // onChange={e => setHexabotAPIKey(e.target.value)}
                     />
                   </>
                 )}

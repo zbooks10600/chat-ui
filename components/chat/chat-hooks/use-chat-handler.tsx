@@ -17,6 +17,7 @@ import {
   handleCreateMessages,
   handleHostedChat,
   handleLocalChat,
+  handleLocalHexabotChat,
   handleRetrieval,
   processResponse,
   validateChatSettings
@@ -309,6 +310,19 @@ export const useChatHandler = () => {
       } else {
         if (modelData!.provider === "ollama") {
           generatedText = await handleLocalChat(
+            payload,
+            profile!,
+            chatSettings!,
+            tempAssistantChatMessage,
+            isRegeneration,
+            newAbortController,
+            setIsGenerating,
+            setFirstTokenReceived,
+            setChatMessages,
+            setToolInUse
+          )
+        } else if (modelData!.provider === "hexabot") {
+          generatedText = await handleLocalHexabotChat(
             payload,
             profile!,
             chatSettings!,

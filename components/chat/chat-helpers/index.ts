@@ -187,6 +187,48 @@ export const handleLocalChat = async (
   )
 }
 
+export const handleLocalHexabotChat = async (
+  payload: ChatPayload,
+  profile: Tables<"profiles">,
+  chatSettings: ChatSettings,
+  tempAssistantMessage: ChatMessage,
+  isRegeneration: boolean,
+  newAbortController: AbortController,
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
+  setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
+  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>
+) => {
+  const formattedMessages = await buildFinalMessages(payload, profile, [])
+
+  const response = await fetchChatResponse(
+    process.env.HEXABOT_API_URL + "/api/chat",
+    {
+      model: chatSettings.model,
+      messages: formattedMessages,
+      options: {
+        temperature: payload.chatSettings.temperature
+      }
+    },
+    false,
+    newAbortController,
+    setIsGenerating,
+    setChatMessages
+  )
+
+  return await processResponse(
+    response,
+    isRegeneration
+      ? payload.chatMessages[payload.chatMessages.length - 1]
+      : tempAssistantMessage,
+    false,
+    newAbortController,
+    setFirstTokenReceived,
+    setChatMessages,
+    setToolInUse
+  )
+}
+
 export const handleHostedChat = async (
   payload: ChatPayload,
   profile: Tables<"profiles">,
@@ -208,9 +250,12 @@ export const handleHostedChat = async (
 
   let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
-  let formattedMessages : any[] = []
+  let formattedMessages: any[] = []
   if (provider === "google") {
-    formattedMessages = await adaptMessagesForGoogleGemini(payload, draftMessages)
+    formattedMessages = await adaptMessagesForGoogleGemini(
+      payload,
+      draftMessages
+    )
   } else {
     formattedMessages = draftMessages
   }
